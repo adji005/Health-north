@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche médecins - Health North{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h3><i class="bi bi-search text-primary"></i> Recherche de médecins</h3>
+    <hr>
+
+    <form action="{{ path('search') }}" method="GET" class="card shadow-sm p-3 mb-4">
+        <div class="row">
+            <div class="col-md-4 mb-2">
+                <input type="text" name="ville" class="form-control" 
+                       placeholder="Ville..." value="{{ ville }}">
+            </div>
+            <div class="col-md-4 mb-2">
+                <input type="text" name="specialite" class="form-control" list="specialites"
+                       placeholder="Spécialité..." value="{{ specialite }}">
+                <datalist id="specialites">
+                    <option value="Médecine générale">
+                    <option value="Cardiologie">
+                    <option value="Dermatologie">
+                    <option value="Ophtalmologie">
+                    <option value="Pédiatrie">
+                    <option value="Gynécologie">
+                    <option value="Psychiatrie">
+                    <option value="Radiologie">
+                    <option value="Anesthésie">
+                    <option value="Chirurgie">
+                </datalist>
+            </div>
+            <div class="col-md-2 mb-2">
+                <select name="secteur" class="form-select">
+                    <option value="">Tous secteurs</option>
+                    <option value="1">Secteur 1</option>
+                    <option value="2">Secteur 2</option>
+                    <option value="3">Secteur 3</option>
+                </select>
+            </div>
+            <div class="col-md-2 mb-2">
+                <button type="submit" class="btn btn-primary w-100">Rechercher</button>
+            </div>
+        </div>
+    </form>
+
+    {% if medecins|length == 0 %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Aucun médecin trouvé pour cette recherche.
+        </div>
+    {% else %}
+        <p class="text-muted">{{ medecins|length }} médecin(s) trouvé(s)</p>
+        {% for medecin in medecins %}
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-2 text-center">
+                        {% if medecin.photoPath %}
+                            <img src="{{ medecin.photoPath }}" class="rounded-circle" width="70">
+                        {% else %}
+                            <i class="bi bi-person-circle fs-1 text-secondary"></i>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-7">
+                        <h5>Dr. {{ medecin.nom }} {{ medecin.prenom }}</h5>
+                        <p class="text-muted mb-1">
+                            <i class="bi bi-briefcase"></i> {{ medecin.specialite }} &nbsp;|&nbsp;
+                            Secteur {{ medecin.secteur }}
+                            {% if medecin.conventionneSecu %}
+                                <span class="badge bg-success ms-1">Conventionné SS</span>
+                            {% endif %}
+                        </p>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-geo-alt"></i> {{ medecin.adresse }}, {{ medecin.ville }}
+                        </p>
+                    </div>
+                    <div class="col-md-3 text-end">
+                        <a href="{{ path('pro_fiche', {id: medecin.id}) }}" 
+                           class="btn btn-primary">
+                            Voir le profil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

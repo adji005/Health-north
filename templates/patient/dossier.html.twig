@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon dossier - Health North{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                 <div class="card-body text-center p-4">
+                    <i class="bi bi-person-circle fs-1 text-primary"></i>
+                    <h5 class="mt-2">{{ patient.prenom }} {{ patient.nom }}</h5>
+                    <p class="text-muted small">{{ app.user.email }}</p>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{{ path('patient_dashboard') }}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a href="{{ path('patient_rdv') }}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-calendar-check"></i> Mes rendez-vous
+                    </a>
+                    <a href="{{ path('patient_dossier') }}" class="list-group-item list-group-item-action active">
+                        <i class="bi bi-file-medical"></i> Mon dossier
+                    </a>
+                      <a href="{{ path('search') }}" class="list-group-item list-group-item-action">
+        <i class="bi bi-search"></i> Trouver un médecin
+    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <h3>Mon dossier médical</h3>
+            <hr>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Informations médicales</h5>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#editForm">
+                        <i class="bi bi-pencil"></i> Modifier
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-4 text-muted">Groupe sanguin</div>
+                        <div class="col-md-8">{{ dossier ? dossier.groupeSanguin : '-' }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 text-muted">Antécédents</div>
+                        <div class="col-md-8">{{ dossier ? dossier.antecedents : '-' }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 text-muted">Maladies chroniques</div>
+                        <div class="col-md-8">{{ dossier ? dossier.maladiesChroniques : '-' }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 text-muted">Allergies</div>
+                        <div class="col-md-8">{{ dossier ? dossier.allergies : '-' }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapse" id="editForm">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Modifier mon dossier</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="{{ path('patient_dossier_modifier') }}">
+                            <div class="mb-3">
+                                <label class="form-label">Groupe sanguin</label>
+                                <select name="groupeSanguin" class="form-select">
+                                    <option value="">--</option>
+                                    {% for groupe in ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] %}
+                                        <option value="{{ groupe }}" {{ dossier and dossier.groupeSanguin == groupe ? 'selected' : '' }}>
+                                            {{ groupe }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Antécédents</label>
+                                <textarea name="antecedents" class="form-control" rows="3">{{ dossier ? dossier.antecedents : '' }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Maladies chroniques</label>
+                                <textarea name="maladiesChroniques" class="form-control" rows="3">{{ dossier ? dossier.maladiesChroniques : '' }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Allergies</label>
+                                <textarea name="allergies" class="form-control" rows="3">{{ dossier ? dossier.allergies : '' }}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Mutuelle</h5>
+        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#editMutuelle">
+            <i class="bi bi-pencil"></i> Modifier
+        </button>
+    </div>
+    <div class="card-body">
+        {% if patient.mutuelles|length > 0 %}
+            {% for mutuelle in patient.mutuelles %}
+            <div class="row mb-2">
+                <div class="col-md-4 text-muted">Organisme</div>
+                <div class="col-md-8">{{ mutuelle.organisme }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-4 text-muted">Numéro adhérent</div>
+                <div class="col-md-8">{{ mutuelle.numeroAdherent ?? '-' }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-4 text-muted">Taux remboursement</div>
+                <div class="col-md-8">{{ mutuelle.tauxRemboursement ?? '-' }}%</div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">Aucune mutuelle renseignée.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="collapse mt-3" id="editMutuelle">
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">Ajouter/Modifier ma mutuelle</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{{ path('patient_mutuelle_modifier') }}">
+                <div class="mb-3">
+                    <label class="form-label">Organisme</label>
+                    <input type="text" name="organisme" class="form-control" 
+                           value="{{ patient.mutuelles|length > 0 ? patient.mutuelles[0].organisme : '' }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Numéro adhérent</label>
+                    <input type="text" name="numeroAdherent" class="form-control"
+                           value="{{ patient.mutuelles|length > 0 ? patient.mutuelles[0].numeroAdherent : '' }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Taux de remboursement (%)</label>
+                    <input type="number" name="tauxRemboursement" class="form-control" min="0" max="100"
+                           value="{{ patient.mutuelles|length > 0 ? patient.mutuelles[0].tauxRemboursement : '' }}">
+                </div>
+                <button type="submit" class="btn btn-primary">Sauvegarder</button>
+            </form>
+        </div>
+    </div>
+</div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

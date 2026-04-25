@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon planning - Health North{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-person-badge fs-1 text-success"></i>
+                    <h5 class="mt-2">Dr. {{ medecin.prenom }} {{ medecin.nom }}</h5>
+                    <p class="text-muted small">{{ medecin.specialite }}</p>
+                    <span class="badge bg-success">Validé</span>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{{ path('doctor_dashboard') }}" class="list-group-item list-group-item-action active">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <h3>Bonjour Dr. {{ medecin.prenom }} 👋</h3>
+            <hr>
+
+            <h5 class="mb-3">Mes rendez-vous du jour</h5>
+            {% set hasRdv = false %}
+            {% for rdv in rendezVous %}
+                {% if rdv.statut == 'confirme' %}
+                    {% set hasRdv = true %}
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h6>{{ rdv.patient.prenom }} {{ rdv.patient.nom }}</h6>
+                                    <p class="text-muted mb-1">
+                                        <i class="bi bi-calendar"></i> {{ rdv.dateHeure|date('d/m/Y à H:i') }}
+                                    </p>
+                                 
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <span class="badge bg-success mb-2">Confirmé</span>
+                                    <br>
+<a href="{{ path('doctor_patient_dossier', {id: rdv.patient.id, rdv_id: rdv.id}) }}"                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-file-medical"></i> Dossier
+                                    </a>
+                                    <form method="post" action="{{ path('doctor_rdv_annuler', {id: rdv.id}) }}" class="d-inline ms-1">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                                            onclick="return confirm('Annuler ce rendez-vous ?')">
+                                            Annuler
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {% if not hasRdv %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> Aucun rendez-vous confirmé.
+                </div>
+            {% endif %}
+
+            <hr>
+            <h5 class="mb-3">Ajouter une disponibilité</h5>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="post" action="{{ path('doctor_dispo_ajouter') }}">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+    <label class="form-label">Date</label>
+    <input type="date" name="date" class="form-control" required>
+</div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Heure début</label>
+                                <input type="time" name="heureDebut" class="form-control" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label">Heure fin</label>
+                                <input type="time" name="heureFin" class="form-control" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Ajouter
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

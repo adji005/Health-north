@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes rendez-vous - Health North{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                 <div class="card-body text-center p-4">
+                    <i class="bi bi-person-circle fs-1 text-primary"></i>
+                    <h5 class="mt-2">{{ patient.prenom }} {{ patient.nom }}</h5>
+                    <p class="text-muted small">{{ app.user.email }}</p>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{{ path('patient_dashboard') }}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a href="{{ path('patient_rdv') }}" class="list-group-item list-group-item-action active">
+                        <i class="bi bi-calendar-check"></i> Mes rendez-vous
+                    </a>
+                    <a href="{{ path('patient_dossier') }}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-file-medical"></i> Mon dossier
+                    </a>
+                    <a href="{{ path('search') }}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-search"></i> Trouver un médecin
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <h3>Mes rendez-vous</h3>
+            <hr>
+
+            {% if rendezVous|length == 0 %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> Aucun rendez-vous.
+                    <a href="{{ path('search') }}" class="alert-link">Prendre un rendez-vous</a>
+                </div>
+            {% else %}
+                {% for rdv in rendezVous %}
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6>Dr. {{ rdv.medecin.nom }} {{ rdv.medecin.prenom }}</h6>
+                                <p class="text-muted mb-1">
+                                    <i class="bi bi-calendar"></i> {{ rdv.dateHeure|date('d/m/Y à H:i') }}
+                                </p>
+                               
+                                {% if rdv.motif %}
+                                    <p class="text-muted mb-0">
+                                        <i class="bi bi-chat-text"></i> {{ rdv.motif }}
+                                    </p>
+                                {% endif %}
+
+                                {% if rdv.statut == 'termine' and rdv.consultation %}
+                                    <div class="alert alert-info mt-2 mb-0">
+                                        <strong><i class="bi bi-file-text"></i> Notes du médecin :</strong><br>
+                                        {{ rdv.consultation.notes }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 text-end">
+                                {% if rdv.statut == 'confirme' %}
+                                    <span class="badge bg-success mb-2">Confirmé</span>
+                                    <br>
+                                    <form method="post" action="{{ path('patient_rdv_annuler', {id: rdv.id}) }}">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                                            onclick="return confirm('Annuler ce rendez-vous ?')">
+                                            <i class="bi bi-x-circle"></i> Annuler
+                                        </button>
+                                    </form>
+                                {% elseif rdv.statut == 'annule' %}
+                                    <span class="badge bg-secondary">Annulé</span>
+                                {% elseif rdv.statut == 'termine' %}
+                                    <span class="badge bg-info">Terminé</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
