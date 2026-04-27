@@ -3,45 +3,147 @@
 {% block title %}Health North - Prenez rendez-vous en ligne{% endblock %}
 
 {% block body %}
-<div class="bg-primary text-white py-5">
-    <div class="container text-center">
-        <h1 class="display-4 fw-bold">Health North</h1>
-        <p class="lead">Trouvez un médecin et prenez rendez-vous en ligne</p>
-        <div class="row justify-content-center mt-4">
-            <div class="col-md-6">
-                <form action="{{ path('search') }}" method="GET" class="d-flex gap-2">
-                    <input type="text" name="ville" class="form-control form-control-lg" placeholder="Ville...">
-                    <input type="text" name="specialite" class="form-control form-control-lg" placeholder="Spécialité...">
-                    <button type="submit" class="btn btn-light btn-lg">Rechercher</button>
-                </form>
-            </div>
+
+<style>
+    .input {
+        width: 100%;
+        max-width: 250px;
+        padding: 0.875rem;
+        font-size: 1rem;
+        border: 1.5px solid #f8f8f8;
+        border-radius: 0.5rem;
+        box-shadow: 2.5px 3px 0 #082833;
+        outline: none;
+        transition: ease 0.25s;
+    }
+
+    .input:focus {
+        box-shadow: 5.5px 7px 0 #082833;
+    }
+
+    #barrederecherche .btn {
+        font-size: 1rem;
+        border: 1.5px solid #f8f8f8;
+        border-radius: 0.5rem;
+        box-shadow: 2.5px 3px 0 #082833;
+        outline: none;
+        transition: ease 0.25s;
+        font-weight: 600;
+        white-space: nowrap;
+        padding: 0.875rem 2rem;
+    }
+
+    #barrederecherche .btn:hover {
+        box-shadow: 5.5px 7px 0 #082833;
+        transform: translateY(-2px);
+    }
+
+    #docteursection .btn{
+         font-size: 1rem;
+        border: 1.5px solid #f8f8f8;
+        border-radius: 0.5rem;
+        box-shadow: 2.5px 3px 0 #082833;
+        outline: none;
+        transition: ease 0.25s;
+        font-weight: 600;
+        white-space: nowrap;
+        padding: 0.875rem 2rem;
+    }
+
+    #docteursection .btn:hover{
+         box-shadow: 5.5px 7px 0 #082833;
+        transform: translateY(-2px);
+    }
+
+    
+
+
+    @media (max-width: 768px) {
+        .input {
+            max-width: 100%;
+        }
+    }
+</style>
+
+<div class="container my-5">
+    <div class="p-5 text-center rounded-3 shadow"
+        style="background: linear-gradient(135deg, #082833 0%, #2b838f 100%); margin-top: 70px;">
+        <h1
+            style="font-family: 'Poppins', sans-serif; color: white; font-weight: bolder; font-size: 75px; margin-bottom: 50px; margin-top: 50px; ">
+            Health North
+        </h1>
+        <p class="col-lg-8 mx-auto fs-5 mb-5" style="color: rgba(255, 255, 255, 0.9);">
+            Trouvez un médecin et prenez rendez-vous en ligne
+        </p>
+
+        <div id="barrederecherche" class="row justify-content-center">
+    <div class="col-lg-10">
+        <form action="{{ path('search') }}" method="GET"
+            class="d-flex flex-column flex-md-row gap-3 justify-content-center align-items-center">
+            <input type="text" name="ville" class="input" placeholder="Ville...">
+            <input type="text" name="specialite" class="input" list="specialites" placeholder="Spécialité...">
+            <button type="submit" class="btn btn-light">Rechercher</button>
+        </form>
+        <datalist id="specialites">
+            <option value="Médecine générale">
+            <option value="Cardiologie">
+            <option value="Dermatologie">
+            <option value="Ophtalmologie">
+            <option value="Pédiatrie">
+            <option value="Gynécologie">
+            <option value="Psychiatrie">
+            <option value="Radiologie">
+            <option value="Anesthésie">
+            <option value="Chirurgie">
+        </datalist>
+    </div>
+</div>
+    </div>
+</div>
+
+
+<div class="mb-5 pb-5"></div>
+
+<div class="container mt-5 mb-5">
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <i class="bi bi-search fs-1  mb-3" style="color: #082833;"></i>
+            <h4>Trouvez un médecin</h4>
+            <p class="text-muted">Recherchez par spécialité, ville ou disponibilité</p>
+        </div>
+        <div class="col-md-4 mb-4">
+            <i class="bi bi-calendar-check fs-1  mb-3" style="color: #082833;"></i>
+            <h4>Prenez rendez-vous</h4>
+            <p class="text-muted">Réservez en ligne 24h/24, 7j/7</p>
+        </div>
+        <div class="col-md-4 mb-4">
+            <i class="bi bi-file-medical fs-1  mb-3" style="color: #082833;"></i>
+            <h4>Gérez votre dossier</h4>
+            <p class="text-muted">Rassemblez facilement toutes vos informations de santé</p>
         </div>
     </div>
 </div>
 
-<div class="container mt-5">
-    <div class="row text-center">
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 border-0 shadow-sm p-4">
-                <i class="bi bi-search fs-1 text-primary mb-3"></i>
-                <h4>Trouvez un médecin</h4>
-                <p class="text-muted">Recherchez par spécialité, ville ou disponibilité</p>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 border-0 shadow-sm p-4">
-                <i class="bi bi-calendar-check fs-1 text-primary mb-3"></i>
-                <h4>Prenez rendez-vous</h4>
-                <p class="text-muted">Réservez en ligne 24h/24, 7j/7</p>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 border-0 shadow-sm p-4">
-                <i class="bi bi-file-medical fs-1 text-primary mb-3"></i>
-                <h4>Gérez votre dossier</h4>
-                <p class="text-muted">Accédez à vos ordonnances et documents médicaux</p>
-            </div>
-        </div>
+<div class="mb-5 "></div>
+<div id="docteursection">
+<div class="container col-xxl-8 px-4 py-5">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6"> <img src="/images/Online-Doctor-rafiki.png" class="d-block mx-lg-auto img-fluid"
+                alt="Bootstrap Themes" width="700" height="500" loading="lazy"> </div>
+        <div class="col-lg-6">
+            <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-5" style="color: #072935 !important;">Vous êtes soignant ? </h1>
+            <p  style="font-family: 'Inter' !important; font-weight: 10px !important;">
+                Découvrez Health North, la solution pensée pour les professionnels de santé, et simplifiez votre
+                quotidien. </br></br>
+                Offrez à vos patients une prise en charge optimale, tout en gagnant en sérénité au travail.</br></br>
+                Améliorez votre qualité de vie professionnelle et développez votre activité en toute simplicité.</br></br>
+            </p>
+            
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-start"> <a href="{{ path('app_register_doctor') }}" class="btn  btn-lg px-4 me-md-2"  style="color: #072935;">S'inscrire</a> </div>
+
     </div>
 </div>
+</div>
+
+<div class="mb-5 pb-5"></div>
 {% endblock %}
