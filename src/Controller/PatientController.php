@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Mutuelle;
 use App\Entity\DossierPatient;
 use App\Entity\RendezVous;
@@ -17,16 +18,21 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_PATIENT')]
 class PatientController extends AbstractController
 {
-    #[Route('/patient/dashboard', name: 'patient_dashboard')]
-    public function dashboard(): Response
-    {
-        $patient = $this->getUser()->getPatient();
+#[Route('/patient/dashboard', name: 'patient_dashboard')]
+public function dashboard(EntityManagerInterface $em): Response
+{
+    $patient = $this->getUser()->getPatient();
 
-        return $this->render('patient/dashboard.html.twig', [
-            'patient' => $patient,
-            'rendezVous' => $patient->getRendezVous(),
-        ]);
-    }
+    $rdvConfirmes = $em->getRepository(RendezVous::class)->findBy([
+        'patient' => $patient,
+        'statut' => 'confirme'
+    ], ['dateHeure' => 'ASC']);
+
+    return $this->render('patient/dashboard.html.twig', [
+        'patient' => $patient,
+        'rendezVous' => $rdvConfirmes,
+    ]);
+}
 
     #[Route('/patient/dossier', name: 'patient_dossier')]
     public function dossier(): Response
@@ -128,14 +134,14 @@ class PatientController extends AbstractController
 
         if (!$rdv->canPatientCancel()) {
             $this->addFlash('error', 'Annulation impossible à moins de 24h du rendez-vous');
-            return $this->redirectToRoute('patient_rdv');
+            return $this->redirectToRoute('patient_dashboard');
         }
 
         $rdv->annuler();
         $em->flush();
 
         $this->addFlash('success', 'Rendez-vous annulé');
-        return $this->redirectToRoute('patient_rdv');
+        return $this->redirectToRoute('patient_dashboard');
     }
     #[Route('/patient/mutuelle/modifier', name: 'patient_mutuelle_modifier', methods: ['POST'])]
     public function modifierMutuelle(

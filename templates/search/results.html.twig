@@ -3,31 +3,120 @@
 {% block title %}Recherche médecins - Health North{% endblock %}
 
 {% block body %}
+
+
+<style>
+
+    body{
+        font-family: 'Inter';
+    }
+    .form-control {
+        width: 100%;
+        max-width: 300px;
+        padding: 0.875rem;
+        font-size: 1rem;
+        border: 1.5px solid #f8f8f8;
+        border-radius: 0.5rem;
+        box-shadow: 2.5px 3px 0 #082833;
+        outline: none;
+        transition: ease 0.25s;
+    }
+
+    .form-control:focus {
+        box-shadow: 5.5px 7px 0 #082833;
+    }
+
+    .btn {
+        font-size: 1rem;
+        border: 1.5px solid #f8f8f8;
+        border-radius: 0.5rem;
+        box-shadow: 2.5px 3px 0 #082833;
+        outline: none;
+        transition: ease 0.25s;
+        font-weight: 600;
+        white-space: nowrap;
+        padding: 0.875rem 2rem;
+    }
+
+     .btn:hover {
+        box-shadow: 5.5px 7px 0 #082833;
+        transform: translateY(-2px);
+    }
+
+    .autocomplete-container {
+        position: relative;
+        width: 100%;
+        max-width: 250px;
+    }
+
+    .autocomplete-suggestions {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1.5px solid #f8f8f8;
+        border-radius: 0.5rem;
+        box-shadow: 2.5px 3px 0 #082833;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        margin-top: 5px;
+    }
+
+    .form-select {
+        background: white;
+        width: 100%;
+        padding: 0.875rem;
+        border: 1.5px solid #f8f8f8;
+        border-radius: 0.5rem;
+        box-shadow: 2.5px 3px 0 #082833;
+        font-size: 1rem;
+    }
+
+    .autocomplete-item {
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-size: 0.95rem;
+    }
+
+    .autocomplete-item:hover {
+        background-color: #f0f0f0;
+    }
+
+    .autocomplete-suggestions:not(:empty) {
+        display: block; /* ← AJOUTE ÇA AUSSI */
+    }
+    @media (max-width: 768px) {
+        .input,
+        .autocomplete-container {
+            max-width: 100%;
+        }
+    }
+    
+</style>
+
+<div class="mb-5 pb-5"></div>
+
+
 <div class="container mt-4">
-    <h3><i class="bi bi-search text-primary"></i> Recherche de médecins</h3>
+    <h3 style="font-family: 'Inter';">Recherche de médecins</h3>
     <hr>
 
-    <form action="{{ path('search') }}" method="GET" class="card shadow-sm p-3 mb-4">
+    <form action="{{ path('search') }}" method="GET" class=" p-3 mb-4">
         <div class="row">
             <div class="col-md-4 mb-2">
                 <input type="text" name="ville" class="form-control" 
                        placeholder="Ville..." value="{{ ville }}">
             </div>
             <div class="col-md-4 mb-2">
-                <input type="text" name="specialite" class="form-control" list="specialites"
-                       placeholder="Spécialité..." value="{{ specialite }}">
-                <datalist id="specialites">
-                    <option value="Médecine générale">
-                    <option value="Cardiologie">
-                    <option value="Dermatologie">
-                    <option value="Ophtalmologie">
-                    <option value="Pédiatrie">
-                    <option value="Gynécologie">
-                    <option value="Psychiatrie">
-                    <option value="Radiologie">
-                    <option value="Anesthésie">
-                    <option value="Chirurgie">
-                </datalist>
+                <div class="autocomplete-container" style="max-width: 100%;">
+                    <input type="text" name="specialite" class="form-control" id="specialiteInput"
+                        placeholder="Spécialité...">
+                    <div class="autocomplete-suggestions" id="suggestions"></div>
+                </div>
             </div>
             <div class="col-md-2 mb-2">
                 <select name="secteur" class="form-select">
@@ -38,44 +127,39 @@
                 </select>
             </div>
             <div class="col-md-2 mb-2">
-                <button type="submit" class="btn btn-primary w-100">Rechercher</button>
+                <button type="submit" class="btn w-100">Rechercher</button>
             </div>
         </div>
     </form>
 
     {% if medecins|length == 0 %}
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i> Aucun médecin trouvé pour cette recherche.
+          <p>Aucun médecin trouvé pour cette recherche.</p> 
         </div>
     {% else %}
         <p class="text-muted">{{ medecins|length }} médecin(s) trouvé(s)</p>
         {% for medecin in medecins %}
-        <div class="card shadow-sm mb-3">
+        <div class="card shadow-sm mb-3" style="border-color: #082833; box-sizing: 2px;">
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-md-2 text-center">
-                        {% if medecin.photoPath %}
-                            <img src="{{ medecin.photoPath }}" class="rounded-circle" width="70">
-                        {% else %}
                             <i class="bi bi-person-circle fs-1 text-secondary"></i>
-                        {% endif %}
                     </div>
                     <div class="col-md-7">
                         <h5>Dr. {{ medecin.nom }} {{ medecin.prenom }}</h5>
                         <p class="text-muted mb-1">
-                            <i class="bi bi-briefcase"></i> {{ medecin.specialite }} &nbsp;|&nbsp;
+                            <i class=" bi-briefcase"></i> {{ medecin.specialite }} &nbsp;|&nbsp;
                             Secteur {{ medecin.secteur }}
                             {% if medecin.conventionneSecu %}
-                                <span class="badge bg-success ms-1">Conventionné SS</span>
+                                <span class="badge" style=" background-color: #082833 ;">Conventionné SS</span>
                             {% endif %}
                         </p>
                         <p class="text-muted mb-0">
-                            <i class="bi bi-geo-alt"></i> {{ medecin.adresse }}, {{ medecin.ville }}
+                            <i class="bi bi-geo-alt"></i> {{ medecin.adresse }}
                         </p>
                     </div>
                     <div class="col-md-3 text-end">
                         <a href="{{ path('pro_fiche', {id: medecin.id}) }}" 
-                           class="btn btn-primary">
+                           class="btn">
                             Voir le profil
                         </a>
                     </div>
@@ -85,4 +169,47 @@
         {% endfor %}
     {% endif %}
 </div>
+
+<div class="mb-5 pb-5"></div>
+<div class="mb-5 pb-5"></div>
+
+
+<script>
+    const specialites = [
+        'Médecine générale', 'Cardiologie', 'Dermatologie',
+        'Ophtalmologie', 'Pédiatrie', 'Gynécologie',
+        'Psychiatrie', 'Radiologie', 'Anesthésie', 'Chirurgie'
+    ];
+
+    const input = document.getElementById('specialiteInput');
+    const suggestions = document.getElementById('suggestions');
+
+    input.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        suggestions.innerHTML = '';
+
+        if (value.length < 1) return;
+
+        const filtered = specialites.filter(s => s.toLowerCase().includes(value));
+
+        filtered.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'autocomplete-item';
+            div.textContent = item;
+            div.onclick = () => {
+                input.value = item;
+                suggestions.innerHTML = '';
+            };
+            suggestions.appendChild(div);
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+            suggestions.innerHTML = '';
+        }
+    });
+</script>
+
+
 {% endblock %}

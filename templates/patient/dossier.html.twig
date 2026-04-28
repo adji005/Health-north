@@ -3,28 +3,58 @@
 {% block title %}Mon dossier - Health North{% endblock %}
 
 {% block body %}
+
+<style>
+    body {
+        font-family: 'Inter';
+    }
+
+    .list-group-item.active {
+        background-color: #072935;
+    }
+    .btn {
+        font-size: 1rem;
+        border: 1.5px solid #f8f8f8;
+        border-radius: 0.5rem;
+        box-shadow: 2.5px 3px 0 #082833;
+        outline: none;
+        transition: ease 0.25s;
+        font-weight: 600;
+        white-space: nowrap;
+        padding: 3px 6px;
+    }
+
+     .btn:hover {
+        box-shadow: 5.5px 7px 0 #082833;
+        transform: translateY(-2px);
+    }
+
+</style>
+
+<div class="mb-5 pb-5"></div>
+
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-3">
-            <div class="card shadow-sm">
-                 <div class="card-body text-center p-4">
-                    <i class="bi bi-person-circle fs-1 text-primary"></i>
+            <div class="card shadow-sm"  style="border-color: #072935; box-sizing: 2px;">
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-person-circle fs-1"></i>
                     <h5 class="mt-2">{{ patient.prenom }} {{ patient.nom }}</h5>
                     <p class="text-muted small">{{ app.user.email }}</p>
                 </div>
                 <div class="list-group list-group-flush">
-                    <a href="{{ path('patient_dashboard') }}" class="list-group-item list-group-item-action">
+                    <a href="{{ path('patient_dashboard') }}" class="list-group-item list-group-item-action"  style="border-color: #072935; box-sizing: 2px;">
                         <i class="bi bi-speedometer2"></i> Dashboard
                     </a>
-                    <a href="{{ path('patient_rdv') }}" class="list-group-item list-group-item-action">
+                    <a href="{{ path('patient_rdv') }}" class="list-group-item list-group-item-action"  style="border-color: #072935; box-sizing: 2px;">
                         <i class="bi bi-calendar-check"></i> Mes rendez-vous
                     </a>
-                    <a href="{{ path('patient_dossier') }}" class="list-group-item list-group-item-action active">
+                    <a href="{{ path('patient_dossier') }}" class="list-group-item list-group-item-action active"  style="border-color: #072935; box-sizing: 2px;">
                         <i class="bi bi-file-medical"></i> Mon dossier
                     </a>
-                      <a href="{{ path('search') }}" class="list-group-item list-group-item-action">
-        <i class="bi bi-search"></i> Trouver un médecin
-    </a>
+                    <a href="{{ path('search') }}" class="list-group-item list-group-item-action"  style="border-color: #072935; box-sizing: 2px;">
+                        <i class="bi bi-search"></i> Trouver un médecin
+                    </a>
                 </div>
             </div>
         </div>
@@ -33,11 +63,11 @@
             <h3>Mon dossier médical</h3>
             <hr>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card shadow-sm mb-4"  style="border-color: #072935; box-sizing: 2px;" >
+                <div class="card-header d-flex justify-content-between align-items-center"  style="border-color: #072935; background-color: white; box-sizing: 2px;">
                     <h5 class="mb-0">Informations médicales</h5>
-                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#editForm">
-                        <i class="bi bi-pencil"></i> Modifier
+                    <button class="btn btn-sm " data-bs-toggle="collapse" data-bs-target="#editForm">
+                        Modifier
                     </button>
                 </div>
                 <div class="card-body">
@@ -61,9 +91,9 @@
             </div>
 
             <div class="collapse" id="editForm">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Modifier mon dossier</h5>
+                <div class="card shadow-sm mb-4" style="border-color: #072935; box-sizing: 2px;">
+                    <div class="card-header" style="border-color: #072935; background-color: white; box-sizing: 2px;">
+                        <h5 class="mb-0 ">Modifier mon dossier</h5>
                     </div>
                     <div class="card-body">
                         <form method="post" action="{{ path('patient_dossier_modifier') }}">
@@ -90,69 +120,75 @@
                                 <label class="form-label">Allergies</label>
                                 <textarea name="allergies" class="form-control" rows="3">{{ dossier ? dossier.allergies : '' }}</textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                            <button type="submit" class="btn ">Sauvegarder</button>
                         </form>
                     </div>
                 </div>
             </div>
-            <div class="card shadow-sm">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Mutuelle</h5>
-        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#editMutuelle">
-            <i class="bi bi-pencil"></i> Modifier
-        </button>
-    </div>
-    <div class="card-body">
-        {% if patient.mutuelles|length > 0 %}
-            {% for mutuelle in patient.mutuelles %}
-            <div class="row mb-2">
-                <div class="col-md-4 text-muted">Organisme</div>
-                <div class="col-md-8">{{ mutuelle.organisme }}</div>
+
+            <div class="card shadow-sm" style="border-color: #072935; box-sizing: 2px;">
+                <div class="card-header d-flex justify-content-between align-items-center" style="border-color: #072935; background-color: white; box-sizing: 2px;">
+                    <h5 class="mb-0">Mutuelle</h5>
+                    <button class="btn btn-sm " data-bs-toggle="collapse" data-bs-target="#editMutuelle">
+                         Modifier
+                    </button>
+                </div>
+                <div class="card-body">
+                    {% if patient.mutuelles|length > 0 %}
+                        {% for mutuelle in patient.mutuelles %}
+                        <div class="row mb-2">
+                            <div class="col-md-4 text-muted">Organisme</div>
+                            <div class="col-md-8">{{ mutuelle.organisme }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 text-muted">Numéro adhérent</div>
+                            <div class="col-md-8">{{ mutuelle.numeroAdherent ?? '-' }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-4 text-muted">Taux remboursement</div>
+                            <div class="col-md-8">{{ mutuelle.tauxRemboursement ?? '-' }}%</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Aucune mutuelle renseignée.</p>
+                    {% endif %}
+                </div>
             </div>
-            <div class="row mb-2">
-                <div class="col-md-4 text-muted">Numéro adhérent</div>
-                <div class="col-md-8">{{ mutuelle.numeroAdherent ?? '-' }}</div>
+
+            <div class="collapse mt-3" id="editMutuelle">
+                <div class="card shadow-sm" style="border-color: #072935; box-sizing: 2px;">
+                    <div class="card-header" style="border-color: #072935; background-color: white; box-sizing: 2px;" >
+                        <h5 class="mb-0">Ajouter/Modifier ma mutuelle</h5>
+                    </div>
+                    <div class="card-body" style="border-color: #072935 !important; box-sizing: 2px !;">
+                        <form method="post" action="{{ path('patient_mutuelle_modifier') }}">
+                            <div class="mb-3">
+                                <label class="form-label">Organisme</label>
+                                <input type="text" name="organisme" class="form-control" 
+                                       value="{{ patient.mutuelles|length > 0 ? patient.mutuelles[0].organisme : '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Numéro adhérent</label>
+                                <input type="text" name="numeroAdherent" class="form-control"
+                                       value="{{ patient.mutuelles|length > 0 ? patient.mutuelles[0].numeroAdherent : '' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Taux de remboursement (%)</label>
+                                <input type="number" name="tauxRemboursement" class="form-control" min="0" max="100"
+                                       value="{{ patient.mutuelles|length > 0 ? patient.mutuelles[0].tauxRemboursement : '' }}">
+                            </div>
+                            <button type="submit" class="btn ">Sauvegarder</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="row mb-2">
-                <div class="col-md-4 text-muted">Taux remboursement</div>
-                <div class="col-md-8">{{ mutuelle.tauxRemboursement ?? '-' }}%</div>
-            </div>
-            {% endfor %}
-        {% else %}
-            <p class="text-muted">Aucune mutuelle renseignée.</p>
-        {% endif %}
+
+        </div>
     </div>
 </div>
 
-<div class="collapse mt-3" id="editMutuelle">
-    <div class="card shadow-sm">
-        <div class="card-header">
-            <h5 class="mb-0">Ajouter/Modifier ma mutuelle</h5>
-        </div>
-        <div class="card-body">
-            <form method="post" action="{{ path('patient_mutuelle_modifier') }}">
-                <div class="mb-3">
-                    <label class="form-label">Organisme</label>
-                    <input type="text" name="organisme" class="form-control" 
-                           value="{{ patient.mutuelles|length > 0 ? patient.mutuelles[0].organisme : '' }}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Numéro adhérent</label>
-                    <input type="text" name="numeroAdherent" class="form-control"
-                           value="{{ patient.mutuelles|length > 0 ? patient.mutuelles[0].numeroAdherent : '' }}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Taux de remboursement (%)</label>
-                    <input type="number" name="tauxRemboursement" class="form-control" min="0" max="100"
-                           value="{{ patient.mutuelles|length > 0 ? patient.mutuelles[0].tauxRemboursement : '' }}">
-                </div>
-                <button type="submit" class="btn btn-primary">Sauvegarder</button>
-            </form>
-        </div>
-    </div>
-</div>
-            
-        </div>
-    </div>
-</div>
+<div class="mb-5 pb-5"></div>
+<div class="mb-5 pb-5"></div>
+
+
 {% endblock %}

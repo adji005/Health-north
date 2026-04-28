@@ -65,6 +65,8 @@ public function register(
 
     $existingUser = $em->getRepository(User::class)->findOneBy(['email' => $data['email']]);
     if ($existingUser) {
+        $this->addFlash('error', 'Compte existant déja');
+
         return $this->json(['error' => 'Email déjà utilisé'], 400);
     }
 
@@ -86,6 +88,9 @@ public function register(
     $em->persist($user);
     $em->persist($patient);
     $em->flush();
+
+    
+    $this->addFlash('success', 'Compte créer vous serez bientot redirigé');
 
     return $this->json([
         'message' => 'Compte créé avec succès',
@@ -109,6 +114,9 @@ public function register(
         $existingUser = $em->getRepository(User::class)->findOneBy(['email' => $data['email']]);
         if ($existingUser) {
             return $this->json(['error' => 'Email déjà utilisé'], 400);
+            
+    $this->addFlash('success', 'Consultation terminée');
+    return $this->redirectToRoute('doctor_dashboard');
         }
 
         $user = new User();
@@ -136,8 +144,14 @@ public function register(
         $em->persist($medecin);
         $em->flush();
 
+        $this->addFlash('success', 'Demande envoyé !');
+
+
         return $this->json([
             'message' => 'Demande envoyée, en attente de validation',
         ], 201);
+    
+
     }
+
 }

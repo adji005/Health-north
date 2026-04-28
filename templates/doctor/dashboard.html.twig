@@ -3,18 +3,44 @@
 {% block title %}Mon planning - Health North{% endblock %}
 
 {% block body %}
+<style>
+    body {
+        font-family: 'Inter';
+    }
+
+        .button {
+        font-size: 1rem;
+        border: 1.5px solid #ffffff ;
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 2.5px 3px 0 #082833;
+        outline: none;
+        transition: ease 0.25s;
+        font-weight: 600;
+        white-space: nowrap;
+        padding: 3px 6px;
+    }
+
+     .button:hover {
+        box-shadow: 5.5px 7px 0 #082833;
+        transform: translateY(-2px);
+     }
+
+</style>
+<div class="mb-5 pb-5"></div>
+
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-3">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm" style="border-color: #072935; box-sizing: 2px;">
                 <div class="card-body text-center p-4">
-                    <i class="bi bi-person-badge fs-1 text-success"></i>
+                    <i class="bi bi-person-circle fs-1 "></i>
                     <h5 class="mt-2">Dr. {{ medecin.prenom }} {{ medecin.nom }}</h5>
                     <p class="text-muted small">{{ medecin.specialite }}</p>
-                    <span class="badge bg-success">Validé</span>
                 </div>
                 <div class="list-group list-group-flush">
-                    <a href="{{ path('doctor_dashboard') }}" class="list-group-item list-group-item-action active">
+                    <a href="{{ path('doctor_dashboard') }}" class="list-group-item list-group-item-action active"
+                        style="border-color: #072935; background-color: #072935; box-sizing: 2px;">
                         <i class="bi bi-speedometer2"></i> Dashboard
                     </a>
                 </div>
@@ -22,59 +48,59 @@
         </div>
 
         <div class="col-md-9">
-            <h3>Bonjour Dr. {{ medecin.prenom }} 👋</h3>
+            <h3>Bonjour Dr. {{ medecin.nom }} ! </h3>
             <hr>
 
             <h5 class="mb-3">Mes rendez-vous du jour</h5>
             {% set hasRdv = false %}
             {% for rdv in rendezVous %}
-                {% if rdv.statut == 'confirme' %}
-                    {% set hasRdv = true %}
-                    <div class="card shadow-sm mb-3">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-md-8">
-                                    <h6>{{ rdv.patient.prenom }} {{ rdv.patient.nom }}</h6>
-                                    <p class="text-muted mb-1">
-                                        <i class="bi bi-calendar"></i> {{ rdv.dateHeure|date('d/m/Y à H:i') }}
-                                    </p>
-                                 
-                                </div>
-                                <div class="col-md-4 text-end">
-                                    <span class="badge bg-success mb-2">Confirmé</span>
-                                    <br>
-<a href="{{ path('doctor_patient_dossier', {id: rdv.patient.id, rdv_id: rdv.id}) }}"                                       class="btn btn-outline-primary btn-sm">
-                                        <i class="bi bi-file-medical"></i> Dossier
-                                    </a>
-                                    <form method="post" action="{{ path('doctor_rdv_annuler', {id: rdv.id}) }}" class="d-inline ms-1">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm"
-                                            onclick="return confirm('Annuler ce rendez-vous ?')">
-                                            Annuler
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
+            {% if rdv.statut == 'confirme' %}
+            {% set hasRdv = true %}
+            <div class="card shadow-sm mb-3" style="border-color: #072935; box-sizing: 2px;">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h6>{{ rdv.patient.prenom }} {{ rdv.patient.nom }}</h6>
+                            <p class="text-muted mb-1">
+                                <i class="bi bi-calendar"></i> {{ rdv.dateHeure|date('d/m/Y à H:i') }}
+                            </p>
+
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <span class="badge mb-2" style="background-color: #286175;">Confirmé</span>
+                            <br>
+                            <a href="{{ path('doctor_patient_dossier', {id: rdv.patient.id, rdv_id: rdv.id}) }}"
+                                class="btn btn-outline-dark btn-sm">
+                                <i class="bi bi-file-medical"></i> Dossier du patient
+                            </a>
+                            <form method="post" action="{{ path('doctor_rdv_annuler', {id: rdv.id}) }}"
+                                class="d-inline ms-1">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    Annuler
+                                </button>
+                            </form>
                         </div>
                     </div>
-                {% endif %}
+                </div>
+            </div>
+            {% endif %}
             {% endfor %}
 
             {% if not hasRdv %}
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle"></i> Aucun rendez-vous confirmé.
-                </div>
+            <p> Aucun rendez-vous confirmé.</p>
+        
             {% endif %}
 
             <hr>
             <h5 class="mb-3">Ajouter une disponibilité</h5>
-            <div class="card shadow-sm">
+            <div class="card shadow-sm" style="border-color: rgb(0, 0, 0);">
                 <div class="card-body">
                     <form method="post" action="{{ path('doctor_dispo_ajouter') }}">
                         <div class="row">
                             <div class="col-md-3 mb-3">
-    <label class="form-label">Date</label>
-    <input type="date" name="date" class="form-control" required>
-</div>
+                                <label class="form-label">Date</label>
+                                <input type="date" name="date" class="form-control" required>
+                            </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label">Heure début</label>
                                 <input type="time" name="heureDebut" class="form-control" required>
@@ -84,8 +110,8 @@
                                 <input type="time" name="heureFin" class="form-control" required>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success">
-                            <i class="bi bi-plus-circle"></i> Ajouter
+                        <button type="submit" class="button">
+                            Ajouter
                         </button>
                     </form>
                 </div>
@@ -93,4 +119,7 @@
         </div>
     </div>
 </div>
+<div class="mb-5 pb-5"></div>
+<div class="mb-5 pb-5"></div>
+
 {% endblock %}

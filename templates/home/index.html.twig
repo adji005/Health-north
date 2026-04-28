@@ -38,8 +38,8 @@
         transform: translateY(-2px);
     }
 
-    #docteursection .btn{
-         font-size: 1rem;
+    #docteursection .btn {
+        font-size: 1rem;
         border: 1.5px solid #f8f8f8;
         border-radius: 0.5rem;
         box-shadow: 2.5px 3px 0 #082833;
@@ -50,16 +50,50 @@
         padding: 0.875rem 2rem;
     }
 
-    #docteursection .btn:hover{
-         box-shadow: 5.5px 7px 0 #082833;
+    #docteursection .btn:hover {
+        box-shadow: 5.5px 7px 0 #082833;
         transform: translateY(-2px);
     }
 
-    
+    .autocomplete-container {
+        position: relative;
+        width: 100%;
+        max-width: 250px;
+    }
 
+    .autocomplete-suggestions {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1.5px solid #f8f8f8;
+        border-radius: 0.5rem;
+        box-shadow: 2.5px 3px 0 #082833;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        margin-top: 5px;
+    }
 
+    .autocomplete-item {
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-size: 0.95rem;
+    }
+
+    .autocomplete-item:hover {
+        background-color: #f0f0f0;
+    }
+
+    .autocomplete-suggestions:not(:empty) {
+        display: block; /* ← AJOUTE ÇA AUSSI */
+    }
     @media (max-width: 768px) {
-        .input {
+        .input,
+        .autocomplete-container {
             max-width: 100%;
         }
     }
@@ -69,7 +103,7 @@
     <div class="p-5 text-center rounded-3 shadow"
         style="background: linear-gradient(135deg, #082833 0%, #2b838f 100%); margin-top: 70px;">
         <h1
-            style="font-family: 'Poppins', sans-serif; color: white; font-weight: bolder; font-size: 75px; margin-bottom: 50px; margin-top: 50px; ">
+            style="font-family: 'Poppins', sans-serif; color: white; font-weight: bolder; font-size: 75px; margin-bottom: 50px; margin-top: 50px;">
             Health North
         </h1>
         <p class="col-lg-8 mx-auto fs-5 mb-5" style="color: rgba(255, 255, 255, 0.9);">
@@ -77,73 +111,125 @@
         </p>
 
         <div id="barrederecherche" class="row justify-content-center">
-    <div class="col-lg-10">
-        <form action="{{ path('search') }}" method="GET"
-            class="d-flex flex-column flex-md-row gap-3 justify-content-center align-items-center">
-            <input type="text" name="ville" class="input" placeholder="Ville...">
-            <input type="text" name="specialite" class="input" list="specialites" placeholder="Spécialité...">
-            <button type="submit" class="btn btn-light">Rechercher</button>
-        </form>
-        <datalist id="specialites">
-            <option value="Médecine générale">
-            <option value="Cardiologie">
-            <option value="Dermatologie">
-            <option value="Ophtalmologie">
-            <option value="Pédiatrie">
-            <option value="Gynécologie">
-            <option value="Psychiatrie">
-            <option value="Radiologie">
-            <option value="Anesthésie">
-            <option value="Chirurgie">
-        </datalist>
+            <div class="col-lg-10">
+                <form action="{{ path('search') }}" method="GET"
+                    class="d-flex flex-column flex-md-row gap-3 justify-content-center align-items-center">
+                    <input type="text" name="ville" class="input" placeholder="Ville...">
+                    <div class="autocomplete-container">
+                        <input type="text" name="specialite" class="input" id="specialiteInput"
+                            placeholder="Spécialité...">
+                        <div class="autocomplete-suggestions" id="suggestions"></div>
+                    </div>
+                    <button type="submit" class="btn btn-light">Rechercher</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
-    </div>
-</div>
-
 
 <div class="mb-5 pb-5"></div>
 
 <div class="container mt-5 mb-5">
     <div class="row text-center">
         <div class="col-md-4 mb-4">
-            <i class="bi bi-search fs-1  mb-3" style="color: #082833;"></i>
+            <i class="bi bi-search fs-1 mb-3" style="color: #082833;"></i>
             <h4>Trouvez un médecin</h4>
             <p class="text-muted">Recherchez par spécialité, ville ou disponibilité</p>
         </div>
         <div class="col-md-4 mb-4">
-            <i class="bi bi-calendar-check fs-1  mb-3" style="color: #082833;"></i>
+            <i class="bi bi-calendar-check fs-1 mb-3" style="color: #082833;"></i>
             <h4>Prenez rendez-vous</h4>
             <p class="text-muted">Réservez en ligne 24h/24, 7j/7</p>
         </div>
         <div class="col-md-4 mb-4">
-            <i class="bi bi-file-medical fs-1  mb-3" style="color: #082833;"></i>
+            <i class="bi bi-file-medical fs-1 mb-3" style="color: #082833;"></i>
             <h4>Gérez votre dossier</h4>
             <p class="text-muted">Rassemblez facilement toutes vos informations de santé</p>
         </div>
     </div>
 </div>
 
-<div class="mb-5 "></div>
+<div class="mb-5"></div>
 <div id="docteursection">
-<div class="container col-xxl-8 px-4 py-5">
-    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-        <div class="col-10 col-sm-8 col-lg-6"> <img src="/images/Online-Doctor-rafiki.png" class="d-block mx-lg-auto img-fluid"
-                alt="Bootstrap Themes" width="700" height="500" loading="lazy"> </div>
-        <div class="col-lg-6">
-            <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-5" style="color: #072935 !important;">Vous êtes soignant ? </h1>
-            <p  style="font-family: 'Inter' !important; font-weight: 10px !important;">
-                Découvrez Health North, la solution pensée pour les professionnels de santé, et simplifiez votre
-                quotidien. </br></br>
-                Offrez à vos patients une prise en charge optimale, tout en gagnant en sérénité au travail.</br></br>
-                Améliorez votre qualité de vie professionnelle et développez votre activité en toute simplicité.</br></br>
-            </p>
-            
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-start"> <a href="{{ path('app_register_doctor') }}" class="btn  btn-lg px-4 me-md-2"  style="color: #072935;">S'inscrire</a> </div>
-
+    <div class="container col-xxl-8 px-4 py-5">
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+            <div class="col-10 col-sm-8 col-lg-6">
+                <img src="/images/Online-Doctor-rafiki.png" class="d-block mx-lg-auto img-fluid"
+                    alt="Médecin en ligne" width="700" height="500" loading="lazy">
+            </div>
+            <div class="col-lg-6">
+                <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-5" style="color: #072935;">Vous êtes
+                    soignant ?</h1>
+                <p style="font-family: 'Inter'; line-height: 1.8;">
+                    Découvrez Health North, la solution pensée pour les professionnels de santé, et simplifiez votre
+                    quotidien.<br><br>
+                    Offrez à vos patients une prise en charge optimale, tout en gagnant en sérénité au
+                    travail.<br><br>
+                    Améliorez votre qualité de vie professionnelle et développez votre activité en toute
+                    simplicité.<br><br>
+                </p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <a href="{{ path('app_register_doctor') }}" class="btn btn-lg px-4 me-md-2"
+                        style="color: #072935;">S'inscrire</a>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 </div>
 
 <div class="mb-5 pb-5"></div>
+
+
+   
+    <footer class="bg-light mt-5 py-4 border-top" style="background-color: #082833 !important;">
+        <div class="container">
+            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+                <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link px-2 text-body-secondary">Accueil</a></li>
+                <li class="nav-item"><a href="{{ path('app_login') }}" class="nav-link px-2 text-body-secondary">Se connecter</a></li>
+                <li class="nav-item"><a href="{{ path('app_register') }}" class="nav-link px-2 text-body-secondary">S'inscrire</a></li>
+                <li class="nav-item"><a href="{{ path('app_register_doctor') }}" class="nav-link px-2 text-body-secondary">Espace médecins</a></li>
+                <li class="nav-item"><a href="{{ path('search') }}" class="nav-link px-2 text-body-secondary">Prendre RDV</a></li>
+            </ul>
+            <p class="text-center text-body-secondary mb-0" style="color: #fff !important;">© 2026 Health North - Tous droits réservés</p>
+        </div>
+    </footer>
+
+
+<script>
+    const specialites = [
+        'Médecine générale', 'Cardiologie', 'Dermatologie',
+        'Ophtalmologie', 'Pédiatrie', 'Gynécologie',
+        'Psychiatrie', 'Radiologie', 'Anesthésie', 'Chirurgie'
+    ];
+
+    const input = document.getElementById('specialiteInput');
+    const suggestions = document.getElementById('suggestions');
+
+    input.addEventListener('input', function () {
+        const value = this.value.toLowerCase();
+        suggestions.innerHTML = '';
+
+        if (value.length < 1) return;
+
+        const filtered = specialites.filter(s => s.toLowerCase().includes(value));
+
+        filtered.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'autocomplete-item';
+            div.textContent = item;
+            div.onclick = () => {
+                input.value = item;
+                suggestions.innerHTML = '';
+            };
+            suggestions.appendChild(div);
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+            suggestions.innerHTML = '';
+        }
+    });
+</script>
+
 {% endblock %}

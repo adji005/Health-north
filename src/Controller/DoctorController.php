@@ -48,6 +48,7 @@ class DoctorController extends AbstractController
         $em->persist($dispo);
         $em->flush();
 
+         $this->addFlash('success', 'Disponibilité ajouté !');
         return $this->redirectToRoute('doctor_dashboard');
     }
 
@@ -133,6 +134,9 @@ public function voirDossier(
         'consultation' => $consultation,
     ]);
 }
+
+
+
 #[Route('/doctor/consultation/creer/{id}', name: 'doctor_consultation_creer', methods: ['POST'])]
 public function creerConsultation(
     \App\Entity\RendezVous $rdv,
@@ -189,7 +193,7 @@ public function creerConsultation(
         $em->flush();
     }
 
-    $this->addFlash('success', 'Consultation enregistrée');
+    $this->addFlash('success', 'Consultation terminée');
     return $this->redirectToRoute('doctor_dashboard');
 }
 }
