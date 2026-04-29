@@ -6,6 +6,7 @@ use App\Repository\DossierPatientRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**Entité DossierPatientContient les informations médicales du patient*/
 #[ORM\Entity(repositoryClass: DossierPatientRepository::class)]
 class DossierPatient
 {
@@ -14,21 +15,27 @@ class DossierPatient
     #[ORM\Column]
     private ?int $id = null;
 
+    /**Antécédents médicaux hosptalisatioN... */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $antecedents = null;
 
+    /**Maladies chroniques */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $maladiesChroniques = null;
 
+    /**Allergies*/
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $allergies = null;
 
+    /**Groupe sanguin */
     #[ORM\Column(length: 5, nullable: true)]
     private ?string $groupeSanguin = null;
 
+    /**Relation One-to-One : Un dossier par patient*/
     #[ORM\OneToOne(inversedBy: 'dossier', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Patient $patient = null;
+
 
     public function getId(): ?int
     {

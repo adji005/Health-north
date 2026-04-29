@@ -9,7 +9,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <style>
         body {
@@ -48,9 +50,7 @@
             border-bottom-color: #fff;
         }
 
-        .btn-primary {
-            background-color: #154b92;
-            border-color: #154b92;
+
         }
 
         @media (max-width: 768px) {
@@ -62,59 +62,67 @@
 </head>
 
 <body>
- 
+    <!-- le Logo ramene a la page d'acceuil que si on est pas connecte, sinn conflit (pouvoir s'inscrire alors qu'on est deja connecte)-->
+
     <nav class="navbar navbar-expand-lg fixed-top py-3">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ path('app_home') }}">
-                Health North
-            </a>
+            {% if app.user %}
+            <span class="navbar-brand">Health North</span>
+            {% else %}
+            <a class="navbar-brand" href="{{ path('app_home') }}">Health North</a>
+            {% endif %}
 
+            <!--Responsivness pour le menu mobile-->
             <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
+            <!-- lien sur la nav bar en fonction de la connexion -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if app.user %}
-                        {% if is_granted('ROLE_PATIENT') %}
-                        <li class="nav-item">
-                            <a class="nav-link {{ app.request.get('_route') == 'patient_dashboard' ? 'active' : '' }}"
-                                href="{{ path('patient_dashboard') }}">Mon espace</a>
-                        </li>
-                        {% endif %}
-                        {% if is_granted('ROLE_DOCTOR') %}
-                        <li class="nav-item">
-                            <a class="nav-link {{ app.request.get('_route') == 'doctor_dashboard' ? 'active' : '' }}"
-                                href="{{ path('doctor_dashboard') }}">Mon planning</a>
-                        </li>
-                        {% endif %}
-                        {% if is_granted('ROLE_ADMIN') %}
-                        <li class="nav-item">
-                            <a class="nav-link {{ app.request.get('_route') == 'admin_dashboard' ? 'active' : '' }}"
-                                href="{{ path('admin_dashboard') }}">Admin</a>
-                        </li>
-                        {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link text-danger" href="{{ path('app_logout') }}">Déconnexion</a>
-                        </li>
+                    {% if is_granted('ROLE_PATIENT') %}
+                    <li class="nav-item">
+                        <a class="nav-link {{ app.request.get('_route') == 'patient_dashboard' ? 'active' : '' }}"
+                            href="{{ path('patient_dashboard') }}">Mon espace</a>
+                    </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_DOCTOR') %}
+                    <li class="nav-item">
+                        <a class="nav-link {{ app.request.get('_route') == 'doctor_dashboard' ? 'active' : '' }}"
+                            href="{{ path('doctor_dashboard') }}">Mon planning</a>
+                    </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a class="nav-link {{ app.request.get('_route') == 'admin_dashboard' ? 'active' : '' }}"
+                            href="{{ path('admin_dashboard') }}">Admin</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{{ path('app_logout') }}">Déconnexion</a>
+                    </li>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link {{ app.request.get('_route') == 'app_login' ? 'active' : '' }}"
-                                href="{{ path('app_login') }}">Connexion</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ app.request.get('_route') == 'app_register' ? 'active' : '' }}"
-                                href="{{ path('app_register') }}">S'inscrire</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ app.request.get('_route') == 'app_register_doctor' ? 'active' : '' }}"
-                                href="{{ path('app_register_doctor') }}">Vous êtes médecin ?</a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ app.request.get('_route') == 'app_login' ? 'active' : '' }}"
+                            href="{{ path('app_login') }}">Connexion</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ app.request.get('_route') == 'app_register' ? 'active' : '' }}"
+                            href="{{ path('app_register') }}">S'inscrire</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ app.request.get('_route') == 'app_register_doctor' ? 'active' : '' }}"
+                            href="{{ path('app_register_doctor') }}">Vous êtes médecin ?</a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+
+
+    <!-- message d'information s'affichant, utile a tt les templates-->
 
     <div class="toast-container position-fixed end-0 p-3" style="z-index: 9999; top: 100px;">
         {% for message in app.flashes('success') %}
@@ -127,7 +135,7 @@
             </div>
         </div>
         {% endfor %}
-        
+
         {% for message in app.flashes('error') %}
         <div class="toast show align-items-center text-bg-danger border-0" role="alert">
             <div class="d-flex">
@@ -141,21 +149,35 @@
     </div>
 
     <script>
-    // Auto-hide toasts après 4 secondes
-    document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(() => {
-            document.querySelectorAll('.toast').forEach(toast => {
-                toast.classList.remove('show');
-            });
-        }, 4000);
-    });
+        // Auto-hide toasts après 4 secondes
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(() => {
+                document.querySelectorAll('.toast').forEach(toast => {
+                    toast.classList.remove('show');
+                });
+            }, 4000);
+        });
+
+
     </script>
+
+
+    {% if app.user %}
+    <script>
+        // Force rechargement si retour arrière
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+    </script>
+    {% endif %}
 
     {% block body %}{% endblock %}
 
 
 
-S
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

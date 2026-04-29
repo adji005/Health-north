@@ -1,19 +1,23 @@
 security:
+    # Hashage des mots de passe avec bcrypt
     password_hashers:
         App\Entity\User:
             algorithm: bcrypt
 
+    # récupère les users depuis la BDD
     providers:
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: email
+                property: email  # Connexion avec l'email
 
     firewalls:
+        # Firewall pour le profiler Symfony
         dev:
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
 
+        # Firewall pour l'API JWT 
         login:
             pattern: ^/api/login
             stateless: true
@@ -24,32 +28,42 @@ security:
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
+        # Firewall pour les routes API cest protégé par JWT
         api:
             pattern: ^/api
             stateless: true
             jwt: ~
 
+        # Firewall principal pour l'application web
         main:
             lazy: true
             provider: app_user_provider
-            user_checker: App\Security\UserChecker 
+            user_checker: App\Security\UserChecker  # Bloque les comptes inactifs
+            
+            # Formulaire de connexion classique
             form_login:
                 login_path: app_login
                 check_path: app_login
                 username_parameter: email
                 password_parameter: password
-                default_target_path: /
+                default_target_path: /  # Redirection après connexion
+            
+            # Déconnexion
             logout:
                 path: app_logout
                 target: app_home
 
     access_control:
+        # Routes publiques (accessibles sans connexion)
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/register/doctor, roles: PUBLIC_ACCESS }
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/doctor, roles: ROLE_DOCTOR }
-        - { path: ^/patient, roles: ROLE_PATIENT }
+        
+        # Routes protégées par rôle
+        - { path: ^/admin, roles: ROLE_ADMIN }     # Espace admin
+        - { path: ^/doctor, roles: ROLE_DOCTOR }   # Espace médecin
+        - { path: ^/patient, roles: ROLE_PATIENT } # Espace patient
+
 
 when@test:
     security:

@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**Entité Patient Représente les informations d'un patient*/
 #[ORM\Entity(repositoryClass: PatientRepository::class)]
 class Patient
 {
@@ -22,6 +23,7 @@ class Patient
     #[ORM\Column(length: 50)]
     private ?string $prenom = null;
 
+    /**Date de naissance du patient*/
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $dateDeNaissance = null;
 
@@ -31,37 +33,29 @@ class Patient
     #[ORM\Column(length: 50)]
     private ?string $adresse = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $numeroSecu = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $carteVitalePath = null;
-
-    /**
-     * @var Collection<int, RendezVous>
-     */
-    #[ORM\OneToMany(targetEntity: RendezVous::class, mappedBy: 'patient', orphanRemoval: true)]
-    private Collection $rendezVous;
-
-    #[ORM\OneToOne(mappedBy: 'patient', cascade: ['persist', 'remove'])]
-    private ?DossierPatient $dossier = null;
-
-    /**
-     * @var Collection<int, Mutuelle>
-     */
-    #[ORM\OneToMany(targetEntity: Mutuelle::class, mappedBy: 'patient', orphanRemoval: true)]
-    private Collection $mutuelles;
-
+    /**Relation One-to-One vers User*/
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    /** collection rendez-vous du patient*/
+    #[ORM\OneToMany(targetEntity: RendezVous::class, mappedBy: 'patient', orphanRemoval: true)]
+    private Collection $rendezVous;
+
+    /**Dossier médical du patient (antécédents, allergies, etc.)*/
+    #[ORM\OneToOne(mappedBy: 'patient', cascade: ['persist', 'remove'])]
+    private ?DossierPatient $dossier = null;
+
+    /**Mutuelle du patient*/
+    #[ORM\OneToOne(mappedBy: 'patient', cascade: ['persist', 'remove'])]
+    private ?Mutuelle $mutuelle = null;
 
     public function __construct()
     {
+        //initialisation de la collections rdv
         $this->rendezVous = new ArrayCollection();
-        $this->mutuelles = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -76,7 +70,6 @@ class Patient
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -88,7 +81,6 @@ class Patient
     public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
-
         return $this;
     }
 
@@ -100,7 +92,6 @@ class Patient
     public function setDateDeNaissance(\DateTime $dateDeNaissance): static
     {
         $this->dateDeNaissance = $dateDeNaissance;
-
         return $this;
     }
 
@@ -112,7 +103,6 @@ class Patient
     public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
-
         return $this;
     }
 
@@ -124,61 +114,46 @@ class Patient
     public function setAdresse(string $adresse): static
     {
         $this->adresse = $adresse;
-
         return $this;
     }
 
-    public function getNumeroSecu(): ?string
+
+
+    public function getUser(): ?User
     {
-        return $this->numeroSecu;
+        return $this->user;
     }
 
-    public function setNumeroSecu(?string $numeroSecu): static
+    public function setUser(User $user): static
     {
-        $this->numeroSecu = $numeroSecu;
-
-        return $this;
-    }
-
-    public function getCarteVitalePath(): ?string
-    {
-        return $this->carteVitalePath;
-    }
-
-    public function setCarteVitalePath(?string $carteVitalePath): static
-    {
-        $this->carteVitalePath = $carteVitalePath;
-
+        $this->user = $user;
         return $this;
     }
 
     /**
-     * @return Collection<int, RendezVous>
+     * Retourne les rendez-vous du patient
      */
     public function getRendezVous(): Collection
     {
         return $this->rendezVous;
     }
 
-    public function addRendezVou(RendezVous $rendezVou): static
+    public function addRendezVous(RendezVous $rendezVous): static
     {
-        if (!$this->rendezVous->contains($rendezVou)) {
-            $this->rendezVous->add($rendezVou);
-            $rendezVou->setPatient($this);
+        if (!$this->rendezVous->contains($rendezVous)) {
+            $this->rendezVous->add($rendezVous);
+            $rendezVous->setPatient($this);
         }
-
         return $this;
     }
 
-    public function removeRendezVou(RendezVous $rendezVou): static
+    public function removeRendezVous(RendezVous $rendezVous): static
     {
-        if ($this->rendezVous->removeElement($rendezVou)) {
-            // set the owning side to null (unless already changed)
-            if ($rendezVou->getPatient() === $this) {
-                $rendezVou->setPatient(null);
+        if ($this->rendezVous->removeElement($rendezVous)) {
+            if ($rendezVous->getPatient() === $this) {
+                $rendezVous->setPatient(null);
             }
         }
-
         return $this;
     }
 
@@ -189,55 +164,30 @@ class Patient
 
     public function setDossier(DossierPatient $dossier): static
     {
-        // set the owning side of the relation if necessary
         if ($dossier->getPatient() !== $this) {
             $dossier->setPatient($this);
         }
-
         $this->dossier = $dossier;
-
         return $this;
     }
+/**Retourne la mutuelle du patient (une seule)*/
+public function getMutuelle(): ?Mutuelle
+{
+    return $this->mutuelle;
+}
 
-    /**
-     * @return Collection<int, Mutuelle>
-     */
-    public function getMutuelles(): Collection
-    {
-        return $this->mutuelles;
+public function setMutuelle(?Mutuelle $mutuelle): static
+{
+    if ($mutuelle === null && $this->mutuelle !== null) {
+        $this->mutuelle->setPatient(null);
     }
 
-    public function addMutuelle(Mutuelle $mutuelle): static
-    {
-        if (!$this->mutuelles->contains($mutuelle)) {
-            $this->mutuelles->add($mutuelle);
-            $mutuelle->setPatient($this);
-        }
-
-        return $this;
+    if ($mutuelle !== null && $mutuelle->getPatient() !== $this) {
+        $mutuelle->setPatient($this);
     }
 
-    public function removeMutuelle(Mutuelle $mutuelle): static
-    {
-        if ($this->mutuelles->removeElement($mutuelle)) {
-            // set the owning side to null (unless already changed)
-            if ($mutuelle->getPatient() === $this) {
-                $mutuelle->setPatient(null);
-            }
-        }
+    $this->mutuelle = $mutuelle;
 
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
+    return $this;
+}
 }

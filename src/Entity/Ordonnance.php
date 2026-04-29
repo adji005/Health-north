@@ -6,6 +6,7 @@ use App\Repository\OrdonnanceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/*Entité Ordonnance, Représente une ordonnance médicale (fichier PDF) liée à une consultation*/
 #[ORM\Entity(repositoryClass: OrdonnanceRepository::class)]
 class Ordonnance
 {
@@ -14,15 +15,21 @@ class Ordonnance
     #[ORM\Column]
     private ?int $id = null;
 
+    /**Chemin vers le fichier PDF de l'ordonnance*/
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
 
+    /**Date de création de l'ordonnance*/
     #[ORM\Column]
     private ?\DateTimeImmutable $dateCreation = null;
 
+/**Relation Many-to-One vers Consultation, en théorie : plusieurs ordonnances possibles mais en pratique : une seule ordonnance par consultation
+ */
     #[ORM\ManyToOne(inversedBy: 'ordonnances')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Consultation $consultation = null;
+
+
 
     public function getId(): ?int
     {
@@ -37,7 +44,6 @@ class Ordonnance
     public function setContenu(string $contenu): static
     {
         $this->contenu = $contenu;
-
         return $this;
     }
 
@@ -49,7 +55,6 @@ class Ordonnance
     public function setDateCreation(\DateTimeImmutable $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
-
         return $this;
     }
 
@@ -61,7 +66,6 @@ class Ordonnance
     public function setConsultation(?Consultation $consultation): static
     {
         $this->consultation = $consultation;
-
         return $this;
     }
 }

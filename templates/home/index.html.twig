@@ -21,23 +21,7 @@
         box-shadow: 5.5px 7px 0 #082833;
     }
 
-    #barrederecherche .btn {
-        font-size: 1rem;
-        border: 1.5px solid #f8f8f8;
-        border-radius: 0.5rem;
-        box-shadow: 2.5px 3px 0 #082833;
-        outline: none;
-        transition: ease 0.25s;
-        font-weight: 600;
-        white-space: nowrap;
-        padding: 0.875rem 2rem;
-    }
-
-    #barrederecherche .btn:hover {
-        box-shadow: 5.5px 7px 0 #082833;
-        transform: translateY(-2px);
-    }
-
+    #barrederecherche .btn,
     #docteursection .btn {
         font-size: 1rem;
         border: 1.5px solid #f8f8f8;
@@ -50,6 +34,7 @@
         padding: 0.875rem 2rem;
     }
 
+    #barrederecherche .btn:hover,
     #docteursection .btn:hover {
         box-shadow: 5.5px 7px 0 #082833;
         transform: translateY(-2px);
@@ -89,8 +74,9 @@
     }
 
     .autocomplete-suggestions:not(:empty) {
-        display: block; /* ← AJOUTE ÇA AUSSI */
+        display: block; 
     }
+
     @media (max-width: 768px) {
         .input,
         .autocomplete-container {
@@ -102,8 +88,7 @@
 <div class="container my-5">
     <div class="p-5 text-center rounded-3 shadow"
         style="background: linear-gradient(135deg, #082833 0%, #2b838f 100%); margin-top: 70px;">
-        <h1
-            style="font-family: 'Poppins', sans-serif; color: white; font-weight: bolder; font-size: 75px; margin-bottom: 50px; margin-top: 50px;">
+        <h1 style="font-family: 'Poppins', sans-serif; color: white; font-weight: bolder; font-size: 75px; margin-bottom: 50px; margin-top: 50px;">
             Health North
         </h1>
         <p class="col-lg-8 mx-auto fs-5 mb-5" style="color: rgba(255, 255, 255, 0.9);">
@@ -150,6 +135,7 @@
 </div>
 
 <div class="mb-5"></div>
+
 <div id="docteursection">
     <div class="container col-xxl-8 px-4 py-5">
         <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
@@ -158,8 +144,7 @@
                     alt="Médecin en ligne" width="700" height="500" loading="lazy">
             </div>
             <div class="col-lg-6">
-                <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-5" style="color: #072935;">Vous êtes
-                    soignant ?</h1>
+                <h1 class="display-5 fw-bold lh-1 mb-5" style="color: #072935;">Vous êtes soignant ?</h1>
                 <p style="font-family: 'Inter'; line-height: 1.8;">
                     Découvrez Health North, la solution pensée pour les professionnels de santé, et simplifiez votre
                     quotidien.<br><br>
@@ -179,21 +164,20 @@
 
 <div class="mb-5 pb-5"></div>
 
+<footer class="bg-light py-4 border-top" style="background-color: #082833 !important;">
+    <div class="container">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link px-2 text-body-secondary">Accueil</a></li>
+            <li class="nav-item"><a href="{{ path('app_login') }}" class="nav-link px-2 text-body-secondary">Se connecter</a></li>
+            <li class="nav-item"><a href="{{ path('app_register') }}" class="nav-link px-2 text-body-secondary">S'inscrire</a></li>
+            <li class="nav-item"><a href="{{ path('app_register_doctor') }}" class="nav-link px-2 text-body-secondary">Espace médecins</a></li>
+            <li class="nav-item"><a href="{{ path('search') }}" class="nav-link px-2 text-body-secondary">Prendre RDV</a></li>
+        </ul>
+        <p class="text-center text-body-secondary mb-0" style="color: #fff !important;">© 2026 Health North - Tous droits réservés</p>
+    </div>
+</footer>
 
-   
-    <footer class="bg-light mt-5 py-4 border-top" style="background-color: #082833 !important;">
-        <div class="container">
-            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-                <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link px-2 text-body-secondary">Accueil</a></li>
-                <li class="nav-item"><a href="{{ path('app_login') }}" class="nav-link px-2 text-body-secondary">Se connecter</a></li>
-                <li class="nav-item"><a href="{{ path('app_register') }}" class="nav-link px-2 text-body-secondary">S'inscrire</a></li>
-                <li class="nav-item"><a href="{{ path('app_register_doctor') }}" class="nav-link px-2 text-body-secondary">Espace médecins</a></li>
-                <li class="nav-item"><a href="{{ path('search') }}" class="nav-link px-2 text-body-secondary">Prendre RDV</a></li>
-            </ul>
-            <p class="text-center text-body-secondary mb-0" style="color: #fff !important;">© 2026 Health North - Tous droits réservés</p>
-        </div>
-    </footer>
-
+ <!-- genre de dropdown qui s'affichent lorsque l'on se met a taper dans spécialité et nous proposent des types de spécialité-->
 
 <script>
     const specialites = [

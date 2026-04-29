@@ -8,9 +8,9 @@
         font-family: 'Inter';
     }
 
-        .button {
+    .button {
         font-size: 1rem;
-        border: 1.5px solid #ffffff ;
+        border: 1.5px solid #ffffff;
         background-color: white;
         border-radius: 0.5rem;
         box-shadow: 2.5px 3px 0 #082833;
@@ -21,11 +21,10 @@
         padding: 3px 6px;
     }
 
-     .button:hover {
+    .button:hover {
         box-shadow: 5.5px 7px 0 #082833;
         transform: translateY(-2px);
-     }
-
+    }
 </style>
 <div class="mb-5 pb-5"></div>
 
@@ -34,7 +33,7 @@
         <div class="col-md-3">
             <div class="card shadow-sm" style="border-color: #072935; box-sizing: 2px;">
                 <div class="card-body text-center p-4">
-                    <i class="bi bi-person-circle fs-1 "></i>
+                    <i class="bi bi-person-circle fs-1"></i>
                     <h5 class="mt-2">Dr. {{ medecin.prenom }} {{ medecin.nom }}</h5>
                     <p class="text-muted small">{{ medecin.specialite }}</p>
                 </div>
@@ -48,10 +47,10 @@
         </div>
 
         <div class="col-md-9">
-            <h3>Bonjour Dr. {{ medecin.nom }} ! </h3>
+            <h3>Bonjour Dr. {{ medecin.nom }} !</h3>
             <hr>
 
-            <h5 class="mb-3">Mes rendez-vous du jour</h5>
+            <h5 class="mb-3">Mes prochains rendez-vous</h5>
             {% set hasRdv = false %}
             {% for rdv in rendezVous %}
             {% if rdv.statut == 'confirme' %}
@@ -64,7 +63,6 @@
                             <p class="text-muted mb-1">
                                 <i class="bi bi-calendar"></i> {{ rdv.dateHeure|date('d/m/Y à H:i') }}
                             </p>
-
                         </div>
                         <div class="col-md-4 text-end">
                             <span class="badge mb-2" style="background-color: #286175;">Confirmé</span>
@@ -87,13 +85,12 @@
             {% endfor %}
 
             {% if not hasRdv %}
-            <p> Aucun rendez-vous confirmé.</p>
-        
+            <p>Aucun rendez-vous confirmé.</p>
             {% endif %}
 
             <hr>
             <h5 class="mb-3">Ajouter une disponibilité</h5>
-            <div class="card shadow-sm" style="border-color: rgb(0, 0, 0);">
+            <div class="card shadow-sm mb-4" style="border-color: rgb(0, 0, 0);">
                 <div class="card-body">
                     <form method="post" action="{{ path('doctor_dispo_ajouter') }}">
                         <div class="row">
@@ -116,10 +113,47 @@
                     </form>
                 </div>
             </div>
+
+            <hr>
+            <h5 class="mb-3">Mes disponibilités</h5>
+            <div class="card shadow-sm" style="border-color: rgb(0, 0, 0);">
+                <div class="card-body">
+                    {% if disponibilites|length == 0 %}
+                        <p class="text-muted">Aucune disponibilité</p>
+                    {% else %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Heure début</th>
+                                    <th>Heure fin</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dispo in disponibilites %}
+                                <tr>
+                                    <td>{{ dispo.date|date('d/m/Y') }}</td>
+                                    <td>{{ dispo.heureDebut|date('H:i') }}</td>
+                                    <td>{{ dispo.heureFin|date('H:i') }}</td>
+                                    <td>
+                                        <form method="post" action="{{ path('doctor_dispo_supprimer', {id: dispo.id}) }}" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-danger" 
+                                                onclick="return confirm('Supprimer cette disponibilité ?')">
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<div class="mb-5 pb-5"></div>
 <div class="mb-5 pb-5"></div>
 
 {% endblock %}

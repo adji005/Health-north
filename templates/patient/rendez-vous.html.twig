@@ -4,39 +4,36 @@
 
 {% block body %}
 
-
 <style>
     body {
         font-family: 'Inter';
     }
 
-    .list-group-item.active{
+    .list-group-item.active {
         background-color: #072935;
-
     }
-
-
 </style> 
 
 <div class="mb-5 pb-5"></div>
 
+
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-3">
-            <div class="card shadow-sm" style="border-color: #072935; box-sizing: 2px;">
-                 <div class="card-body text-center p-4"  style="border-color: #072935; box-sizing: 2px;">
-                    <i class="bi bi-person-circle fs-1 "></i>
+            <div class="card shadow-sm" style="border-color: #072935;">
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-person-circle fs-1"></i>
                     <h5 class="mt-2">{{ patient.prenom }} {{ patient.nom }}</h5>
                     <p class="text-muted small">{{ app.user.email }}</p>
                 </div>
                 <div class="list-group list-group-flush">
-                    <a href="{{ path('patient_dashboard') }}" class="list-group-item list-group-item-action" style="border-color: #072935; box-sizing: 2px;">
+                    <a href="{{ path('patient_dashboard') }}" class="list-group-item list-group-item-action">
                         <i class="bi bi-speedometer2"></i> Dashboard
                     </a>
-                    <a href="{{ path('patient_rdv') }}" class="list-group-item list-group-item-action active" style="border-color: #072935; box-sizing: 2px;">
+                    <a href="{{ path('patient_rdv') }}" class="list-group-item list-group-item-action active">
                         <i class="bi bi-calendar-check"></i> Mes rendez-vous
                     </a>
-                    <a href="{{ path('patient_dossier') }}" class="list-group-item list-group-item-action" style="border-color: #072935; box-sizing: 2px;">
+                    <a href="{{ path('patient_dossier') }}" class="list-group-item list-group-item-action">
                         <i class="bi bi-file-medical"></i> Mon dossier
                     </a>
                     <a href="{{ path('search') }}" class="list-group-item list-group-item-action">
@@ -46,6 +43,8 @@
             </div>
         </div>
 
+        <!--affichage des rdv-->
+
         <div class="col-md-9">
             <h3>Mes rendez-vous</h3>
             <hr>
@@ -54,7 +53,7 @@
                 <p>Aucun rendez-vous. <a href="{{ path('search') }}" class="alert-link" style="font-weight: 600; font-family: Inter; text-decoration: none;">Prendre un rendez-vous</a></p> 
             {% else %}
                 {% for rdv in rendezVous %}
-                <div class="card shadow-sm mb-3" style="border-color: #072935; box-sizing: 2px;">
+                <div class="card shadow-sm mb-3" style="border-color: #072935;">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-md-8">
@@ -76,6 +75,8 @@
                                     </div>
                                 {% endif %}
                             </div>
+
+                            <!--annnuler un rdv-->
                             <div class="col-md-4 text-end">
                                 {% if rdv.statut == 'confirme' %}
                                     <span class="badge" style="background-color: #012741;">Confirmé</span>
@@ -102,4 +103,5 @@
 
 <div class="mb-5 pb-5"></div>
 <div class="mb-5 pb-5"></div>
+
 {% endblock %}

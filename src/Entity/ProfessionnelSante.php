@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**Entité ProfessionnelSante, représente les infos du médecin et le compte peut se retrouver sous 3 statuts possibles : 'en_attente'(en attente de validation par l'admin) 'valide' 'refuse'*/
 #[ORM\Entity(repositoryClass: ProfessionnelSanteRepository::class)]
 class ProfessionnelSante
 {
@@ -16,6 +17,7 @@ class ProfessionnelSante
     #[ORM\Column]
     private ?int $id = null;
 
+    /**Relation One-to-One vers User*/
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -26,9 +28,11 @@ class ProfessionnelSante
     #[ORM\Column(length: 50)]
     private ?string $prenom = null;
 
+    /**Spécialité médicale*/
     #[ORM\Column(length: 100)]
     private ?string $specialite = null;
 
+    /**Numéro RPPS (Répertoire Partagé des Professionnels de Santé tt les médecin en ont un )*/
     #[ORM\Column(length: 100)]
     private ?string $numeroRPPS = null;
 
@@ -44,54 +48,32 @@ class ProfessionnelSante
     #[ORM\Column(length: 10)]
     private ?string $codePostal = null;
 
+    /**Secteur conventionné (1, 2, ou 3)*/
     #[ORM\Column(length: 1)]
     private ?string $secteur = null;
 
+    /**Médecin conventionné Sécurité Sociale*/
     #[ORM\Column]
     private ?bool $conventionneSecu = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?array $modeDePaiement = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?array $horaires = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $photoPath = null;
-
+    /**Statut de validation : 'en_attente', 'valide', 'refuse'*/
     #[ORM\Column(length: 20)]
     private string $statut = 'en_attente';
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $justificatifPath = null;
-
-    /**
-     * @var Collection<int, ConsultationType>
-     */
-    #[ORM\ManyToMany(targetEntity: ConsultationType::class)]
-    private Collection $consultationTypes;
-
-    /**
-     * @var Collection<int, Disponibilite>
-     */
+    /**disponibilités du médecin*/
     #[ORM\OneToMany(targetEntity: Disponibilite::class, mappedBy: 'medecin', orphanRemoval: true)]
     private Collection $disponibilites;
 
-    /**
-     * @var Collection<int, RendezVous>
-     */
+    /**Collection des rendez-vous du médecin*/
     #[ORM\OneToMany(targetEntity: RendezVous::class, mappedBy: 'medecin', orphanRemoval: true)]
     private Collection $rendezVous;
 
     public function __construct()
     {
-        $this->consultationTypes = new ArrayCollection();
         $this->disponibilites = new ArrayCollection();
         $this->rendezVous = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -219,50 +201,6 @@ class ProfessionnelSante
         return $this;
     }
 
-    public function getModeDePaiement(): ?array
-    {
-        return $this->modeDePaiement;
-    }
-
-    public function setModeDePaiement(?array $modeDePaiement): static
-    {
-        $this->modeDePaiement = $modeDePaiement;
-        return $this;
-    }
-
-    public function getHoraires(): ?array
-    {
-        return $this->horaires;
-    }
-
-    public function setHoraires(?array $horaires): static
-    {
-        $this->horaires = $horaires;
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
-        return $this;
-    }
-
-    public function getPhotoPath(): ?string
-    {
-        return $this->photoPath;
-    }
-
-    public function setPhotoPath(?string $photoPath): static
-    {
-        $this->photoPath = $photoPath;
-        return $this;
-    }
-
     public function getStatut(): string
     {
         return $this->statut;
@@ -274,36 +212,7 @@ class ProfessionnelSante
         return $this;
     }
 
-    public function getJustificatifPath(): ?string
-    {
-        return $this->justificatifPath;
-    }
-
-    public function setJustificatifPath(?string $justificatifPath): static
-    {
-        $this->justificatifPath = $justificatifPath;
-        return $this;
-    }
-
-    public function getConsultationTypes(): Collection
-    {
-        return $this->consultationTypes;
-    }
-
-    public function addConsultationType(ConsultationType $consultationType): static
-    {
-        if (!$this->consultationTypes->contains($consultationType)) {
-            $this->consultationTypes->add($consultationType);
-        }
-        return $this;
-    }
-
-    public function removeConsultationType(ConsultationType $consultationType): static
-    {
-        $this->consultationTypes->removeElement($consultationType);
-        return $this;
-    }
-
+    /**Retourne les disponibilités du médecin*/
     public function getDisponibilites(): Collection
     {
         return $this->disponibilites;
@@ -328,25 +237,26 @@ class ProfessionnelSante
         return $this;
     }
 
+    /**Retourne les rendez-vous du médecin*/
     public function getRendezVous(): Collection
     {
         return $this->rendezVous;
     }
 
-    public function addRendezVou(RendezVous $rendezVou): static
+    public function addRendezVous(RendezVous $rendezVous): static
     {
-        if (!$this->rendezVous->contains($rendezVou)) {
-            $this->rendezVous->add($rendezVou);
-            $rendezVou->setMedecin($this);
+        if (!$this->rendezVous->contains($rendezVous)) {
+            $this->rendezVous->add($rendezVous);
+            $rendezVous->setMedecin($this);
         }
         return $this;
     }
 
-    public function removeRendezVou(RendezVous $rendezVou): static
+    public function removeRendezVous(RendezVous $rendezVous): static
     {
-        if ($this->rendezVous->removeElement($rendezVou)) {
-            if ($rendezVou->getMedecin() === $this) {
-                $rendezVou->setMedecin(null);
+        if ($this->rendezVous->removeElement($rendezVous)) {
+            if ($rendezVous->getMedecin() === $this) {
+                $rendezVous->setMedecin(null);
             }
         }
         return $this;

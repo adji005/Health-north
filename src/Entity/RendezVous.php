@@ -6,6 +6,9 @@ use App\Repository\RendezVousRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**Entité RendezVous, Représente un rendez-vous médical entre un patient et un médecin. Il existe plusieurs Statuts possibles : 'confirme' 'annule' 'termine'*/
+
+
 #[ORM\Entity(repositoryClass: RendezVousRepository::class)]
 class RendezVous
 {
@@ -14,55 +17,37 @@ class RendezVous
     #[ORM\Column]
     private ?int $id = null;
 
+    /**Date et heure du rendez-vous*/
     #[ORM\Column]
     private ?\DateTimeImmutable $dateHeure = null;
 
+    /**Statut du RDV*/
     #[ORM\Column(length: 20)]
     private string $statut = 'confirme';
 
+    /*Motif de consultation (optionnel)*/
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $motif = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $ordonnancePath = null;
-
+    /**Date de création du RDV*/
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    /**Relation Many-to-One, Plusieurs RDV pour un patient*/
     #[ORM\ManyToOne(inversedBy: 'rendezVous')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Patient $patient = null;
 
+    /**Relation Many-to-One, Plusieurs RDV pour un médecin*/
     #[ORM\ManyToOne(inversedBy: 'rendezVous')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ProfessionnelSante $medecin = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?ConsultationType $consultationType = null;
-
+    /**Relation One-to-One : Une consultation par RDV*/
     #[ORM\OneToOne(mappedBy: 'rendezVous', cascade: ['persist', 'remove'])]
-private ?Consultation $consultation = null;
+    private ?Consultation $consultation = null;
 
-public function getConsultation(): ?Consultation
-{
-    return $this->consultation;
-}
 
-public function setConsultation(?Consultation $consultation): static
-{
-    if ($consultation === null && $this->consultation !== null) {
-        $this->consultation->setRendezVous(null);
-    }
-
-    if ($consultation !== null && $consultation->getRendezVous() !== $this) {
-        $consultation->setRendezVous($this);
-    }
-
-    $this->consultation = $consultation;
-
-    return $this;
-}
     public function getId(): ?int
     {
         return $this->id;
@@ -101,17 +86,6 @@ public function setConsultation(?Consultation $consultation): static
         return $this;
     }
 
-    public function getOrdonnancePath(): ?string
-    {
-        return $this->ordonnancePath;
-    }
-
-    public function setOrdonnancePath(?string $ordonnancePath): static
-    {
-        $this->ordonnancePath = $ordonnancePath;
-        return $this;
-    }
-
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
@@ -145,27 +119,44 @@ public function setConsultation(?Consultation $consultation): static
         return $this;
     }
 
-    public function getConsultationType(): ?ConsultationType
+    public function getConsultation(): ?Consultation
     {
-        return $this->consultationType;
+        return $this->consultation;
     }
 
-    public function setConsultationType(?ConsultationType $consultationType): static
+    public function setConsultation(?Consultation $consultation): static
     {
-        $this->consultationType = $consultationType;
+        if ($consultation === null && $this->consultation !== null) {
+            $this->consultation->setRendezVous(null);
+        }
+
+        if ($consultation !== null && $consultation->getRendezVous() !== $this) {
+            $consultation->setRendezVous($this);
+        }
+
+        $this->consultation = $consultation;
+
         return $this;
     }
 
+
+    /**Vérifie si le patient peut annuler ce RDV car j'ai ajouté une règle qui fait qu'il ne peut pas l'annuler a moins de 24h du rdv*/
     public function canPatientCancel(): bool
     {
+    
         if ($this->statut === 'annule') {
             return false;
         }
+
+        // Calculer le délai entre maintenant et le RDV
         $now = new \DateTimeImmutable();
         $diff = $this->dateHeure->getTimestamp() - $now->getTimestamp();
+
+        // 86400 secondes = 24 heures
         return $diff > 86400;
     }
 
+    /**Annuler le rendez-vous*/
     public function annuler(): void
     {
         $this->statut = 'annule';

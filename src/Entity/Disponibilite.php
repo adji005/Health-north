@@ -6,6 +6,7 @@ use App\Repository\DisponibiliteRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**Entité Disponibilite, représente un créneau horaire où un médecin est disponible*/
 #[ORM\Entity(repositoryClass: DisponibiliteRepository::class)]
 class Disponibilite
 {
@@ -14,19 +15,23 @@ class Disponibilite
     #[ORM\Column]
     private ?int $id = null;
 
+    /**Date de la disponibilité*/
     #[ORM\Column(type: 'date')]
     private ?\DateTimeInterface $date = null;
 
+    /**Heure de début (ex: 14h00)*/
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTime $heureDebut = null;
 
+    /**Heure de fin */
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTime $heureFin = null;
 
-
+    /**Relation Many-to-One Plusieurs disponibilités pour un médecin*/
     #[ORM\ManyToOne(inversedBy: 'disponibilites')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ProfessionnelSante $medecin = null;
+
 
     public function getId(): ?int
     {
@@ -52,7 +57,6 @@ class Disponibilite
     public function setHeureDebut(\DateTime $heureDebut): static
     {
         $this->heureDebut = $heureDebut;
-
         return $this;
     }
 
@@ -64,10 +68,8 @@ class Disponibilite
     public function setHeureFin(\DateTime $heureFin): static
     {
         $this->heureFin = $heureFin;
-
         return $this;
     }
-
 
     public function getMedecin(): ?ProfessionnelSante
     {
@@ -77,7 +79,6 @@ class Disponibilite
     public function setMedecin(?ProfessionnelSante $medecin): static
     {
         $this->medecin = $medecin;
-
         return $this;
     }
 }

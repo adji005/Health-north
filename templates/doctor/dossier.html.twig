@@ -3,11 +3,11 @@
 {% block title %}Dossier patient - Health North{% endblock %}
 
 {% block body %}
+
 <style>
-    
-        .btn {
+    .btn {
         font-size: 1rem;
-        border: 1.5px solid #ffffff ;
+        border: 1.5px solid #ffffff;
         background-color: white;
         border-radius: 0.5rem;
         box-shadow: 2.5px 3px 0 #082833;
@@ -18,12 +18,12 @@
         padding: 3px 6px;
     }
 
-     .btn:hover {
+    .btn:hover {
         box-shadow: 5.5px 7px 0 #082833;
         transform: translateY(-2px);
-     }
-
+    }
 </style>
+
 <div class="mb-5 pb-5"></div>
 
 <div class="container mt-4">
@@ -32,7 +32,7 @@
 
     <div class="row">
         <div class="col-md-4">
-            <div class="card shadow-sm p-4 mb-3" style="border-color: #072935; box-sizing: 2px;">
+            <div class="card shadow-sm p-4 mb-3" style="border-color: #072935;">
                 <h5>Informations personnelles</h5>
                 <div class="row mb-2">
                     <div class="col-6 text-muted">Nom</div>
@@ -52,21 +52,27 @@
                 </div>
             </div>
 
-            {% if patient.mutuelles|length > 0 %}
-            <div class="card shadow-sm p-4" style="border-color: #072935; box-sizing: 2px;">
+            {% if patient.mutuelle %}
+            <div class="card shadow-sm p-4" style="border-color: #072935;">
                 <h5>Mutuelle</h5>
-                {% for mutuelle in patient.mutuelles %}
                 <div class="row mb-2">
                     <div class="col-6 text-muted">Organisme</div>
-                    <div class="col-6">{{ mutuelle.organisme }}</div>
+                    <div class="col-6">{{ patient.mutuelle.organisme }}</div>
                 </div>
-                {% endfor %}
+                <div class="row mb-2">
+                    <div class="col-6 text-muted">Numéro adhérent</div>
+                    <div class="col-6">{{ patient.mutuelle.numeroAdherent ?? '-' }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-6 text-muted">Taux</div>
+                    <div class="col-6">{{ patient.mutuelle.tauxRemboursement ?? '-' }}%</div>
+                </div>
             </div>
             {% endif %}
         </div>
 
         <div class="col-md-8">
-            <div class="card shadow-sm p-4 mb-3" style="border-color: #072935; box-sizing: 2px;">
+            <div class="card shadow-sm p-4 mb-3" style="border-color: #072935;">
                 <h5>Informations médicales</h5>
                 {% if patient.dossier %}
                 <div class="row mb-2">
@@ -86,32 +92,25 @@
                     <div class="col-8">{{ patient.dossier.allergies ?? '-' }}</div>
                 </div>
                 {% else %}
-                    <p class="text-muted">Aucun dossier médical renseigné.</p>
+                <p class="text-muted">Aucun dossier médical renseigné.</p>
                 {% endif %}
             </div>
 
-            <div class="card shadow-sm p-4" style="border-color: #072935; box-sizing: 2px;">
+            <div class="card shadow-sm p-4" style="border-color: #072935;">
                 <h5>Compte-rendu de consultation</h5>
-                <form method="post" action="{{ path('doctor_consultation_creer', {id: rdv.id}) }}" enctype="multipart/form-data">
+                <form method="post" action="{{ path('doctor_consultation_creer', {id: rdv.id}) }}"
+                    enctype="multipart/form-data">
                     <div class="mb-3">
                         <label class="form-label">Notes de consultation</label>
-                        <textarea name="notes" class="form-control" rows="4" 
-                                  placeholder="Observations, diagnostic, traitement...">{{ consultation ? consultation.notes : '' }}</textarea>
+                        <textarea name="notes" class="form-control" rows="4"
+                            placeholder="Observations, diagnostic, traitement..."></textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Ordonnance (PDF optionnel)</label>
                         <input type="file" name="ordonnance" class="form-control" accept=".pdf">
-                        {% if consultation and consultation.ordonnance %}
-                            <small class="text-muted mt-1 d-block">
-                                <i class="bi bi-file-pdf text-danger"></i> 
-                                <a href="/{{ consultation.ordonnance.contenu }}" target="_blank">
-                                    Voir l'ordonnance actuelle
-                                </a>
-                            </small>
-                        {% endif %}
                     </div>
-                    <button type="submit" class="btn" >
-                        <i class="bi bi-save"></i> Enregistrer la consultation 
+                    <button type="submit" class="btn">
+                        <i class="bi bi-save"></i> Enregistrer la consultation
                     </button>
                 </form>
             </div>
@@ -122,6 +121,7 @@
         <i class="bi bi-arrow-left"></i> Retour au dashboard
     </a>
 </div>
+
 <div class="mb-5 pb-5"></div>
 <div class="mb-5 pb-5"></div>
 
