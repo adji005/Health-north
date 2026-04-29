@@ -21,4 +21,4 @@ cat > .gitignore << 'EOF'
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
-EOF
+EOF/.env.test
