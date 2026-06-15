@@ -14,6 +14,8 @@ RUN cp .env.dev .env
 
 RUN composer install --no-dev --optimize-autoloader
 
+RUN php bin/console doctrine:schema:create --no-interaction || true
+
 RUN echo '<VirtualHost *:80>\n\
     DocumentRoot /var/www/html/public\n\
     <Directory /var/www/html/public>\n\
