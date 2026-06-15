@@ -22,6 +22,7 @@ RUN chmod +x /usr/local/bin/start.sh
 RUN echo 'ServerName localhost\n\
 <VirtualHost *:80>\n\
     DocumentRoot /var/www/html/public\n\
+    SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1\n\
     <Directory /var/www/html/public>\n\
         Options Indexes FollowSymLinks\n\
         AllowOverride All\n\
