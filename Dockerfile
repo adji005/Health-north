@@ -14,16 +14,15 @@ RUN cp .env.dev .env
 
 RUN composer install --no-dev --optimize-autoloader
 
-RUN php bin/console cache:clear --env=prod --no-interaction 2>/dev/null || true
-RUN php bin/console doctrine:cache:clear-metadata --env=prod --no-interaction 2>/dev/null || true
-RUN php bin/console cache:warmup --env=prod --no-interaction 2>/dev/null || true
-RUN php bin/console doctrine:generate:proxies --env=prod --no-interaction 2>/dev/null || true
+RUN echo '#!/bin/bash\n\
+php /var/www/html/bin/console doctrine:schema:create --env=prod --no-interaction 2>/dev/null || true\n\
+php /var/www/html/bin/console cache:clear --env=prod --no-interaction 2>/dev/null || true\n\
+php /var/www/html/bin/console cache:warmup --env=prod --no-interaction 2>/dev/null || true\n\
+apache2-foreground' > /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
 
 RUN chown -R www-data:www-data /var/www/html/var
 RUN chmod -R 777 /var/www/html/var
-
-RUN echo '#!/bin/bash\nphp /var/www/html/bin/console doctrine:schema:create --env=prod --no-interaction 2>/dev/null || true\napache2-foreground' > /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
 
 RUN echo 'ServerName localhost\n\
 <VirtualHost *:80>\n\
