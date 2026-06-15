@@ -10,16 +10,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/patient')]
-#[IsGranted('ROLE_PATIENT')]
 class ApiPatientController extends AbstractController
 {
+    private function checkAuth(): ?JsonResponse
+    {
+        if (!$this->getUser()) {
+            return $this->json(['error' => 'Non authentifié'], 401);
+        }
+        if (!in_array('ROLE_PATIENT', $this->getUser()->getRoles())) {
+            return $this->json(['error' => 'Accès refusé'], 403);
+        }
+        return null;
+    }
+
     /** GET /api/patient/rdv — RDV à venir (confirmés) */
     #[Route('/rdv', name: 'api_patient_rdv', methods: ['GET'])]
     public function getRdv(EntityManagerInterface $em): JsonResponse
     {
+        if ($auth = $this->checkAuth()) return $auth;
         $patient = $this->getUser()->getPatient();
 
         $rdvs = $em->getRepository(RendezVous::class)->findBy(
@@ -46,6 +56,7 @@ class ApiPatientController extends AbstractController
     #[Route('/rdv/passes', name: 'api_patient_rdv_passes', methods: ['GET'])]
     public function getRdvPasses(EntityManagerInterface $em): JsonResponse
     {
+        if ($auth = $this->checkAuth()) return $auth;
         $patient = $this->getUser()->getPatient();
 
         $rdvs = $em->getRepository(RendezVous::class)->findBy(
@@ -78,6 +89,7 @@ class ApiPatientController extends AbstractController
     #[Route('/rdv/annuler/{id}', name: 'api_patient_rdv_annuler', methods: ['POST'])]
     public function annulerRdv(RendezVous $rdv, EntityManagerInterface $em): JsonResponse
     {
+        if ($auth = $this->checkAuth()) return $auth;
         $patient = $this->getUser()->getPatient();
 
         if ($rdv->getPatient() !== $patient) {
@@ -98,6 +110,7 @@ class ApiPatientController extends AbstractController
     #[Route('/medecins', name: 'api_patient_medecins', methods: ['GET'])]
     public function getMedecins(ProfessionnelSanteRepository $medecinRepo): JsonResponse
     {
+        if ($auth = $this->checkAuth()) return $auth;
         $medecins = $medecinRepo->findBy(['statut' => 'valide']);
 
         $result = [];
@@ -148,6 +161,7 @@ class ApiPatientController extends AbstractController
         EntityManagerInterface $em,
         ProfessionnelSanteRepository $medecinRepo
     ): JsonResponse {
+        if ($auth = $this->checkAuth()) return $auth;
         $patient = $this->getUser()->getPatient();
         $data = json_decode($request->getContent(), true);
 
@@ -177,6 +191,7 @@ class ApiPatientController extends AbstractController
     #[Route('/profil', name: 'api_patient_profil', methods: ['GET'])]
     public function getProfil(): JsonResponse
     {
+        if ($auth = $this->checkAuth()) return $auth;
         $patient = $this->getUser()->getPatient();
 
         return $this->json([

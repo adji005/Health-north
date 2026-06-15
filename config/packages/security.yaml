@@ -35,6 +35,8 @@ security:
             stateless: true
             provider: app_user_provider
             jwt: ~
+            entry_point: lexik_jwt_authentication.handler.authentication_failure
+
 
         main:
             lazy: true
