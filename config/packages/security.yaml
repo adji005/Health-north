@@ -55,10 +55,12 @@ security:
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/register/doctor, roles: PUBLIC_ACCESS }
+        - { path: ^/api/patient/medecins, roles: PUBLIC_ACCESS }
         - { path: ^/api/patient, roles: ROLE_PATIENT }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/doctor, roles: ROLE_DOCTOR }
         - { path: ^/patient, roles: ROLE_PATIENT }
+        
 
 when@test:
     security:
