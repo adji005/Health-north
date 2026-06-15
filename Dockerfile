@@ -14,8 +14,6 @@ RUN cp .env.dev .env
 
 RUN composer install --no-dev --optimize-autoloader
 
-RUN php bin/console doctrine:schema:create --no-interaction || true
-
 RUN echo '<VirtualHost *:80>\n\
     DocumentRoot /var/www/html/public\n\
     <Directory /var/www/html/public>\n\
@@ -24,6 +22,7 @@ RUN echo '<VirtualHost *:80>\n\
     </Directory>\n\
 </VirtualHost>' > /etc/apache2/sites-enabled/000-default.conf
 
-RUN a2enmod rewrite
+RUN a2enmod rewrite headers
+RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
 EXPOSE 80
