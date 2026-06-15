@@ -10,13 +10,15 @@ WORKDIR /var/www/html
 
 COPY . .
 
+RUN ls -la /var/www/html/config/jwt/ || echo "JWT FILES MISSING"
+
 RUN cp .env.dev .env
 
 RUN composer install --no-dev --optimize-autoloader
 
 RUN mkdir -p /var/www/html/var && chown -R www-data:www-data /var/www/html/var && chmod -R 777 /var/www/html/var
 
-RUN echo '#!/bin/bash\nphp /var/www/html/bin/console doctrine:schema:create --env=prod --no-interaction 2>/dev/null || true\nphp /var/www/html/bin/console cache:clear --env=prod --no-interaction 2>/dev/null || true\nphp /var/www/html/bin/console cache:warmup --env=prod --no-interaction 2>/dev/null || true\napache2-foreground' > /usr/local/bin/start.sh
+RUN echo '#!/bin/bash\nls /var/www/html/config/jwt/ || echo "JWT DIR NOT FOUND"\nphp /var/www/html/bin/console doctrine:schema:create --env=prod --no-interaction 2>/dev/null || true\nphp /var/www/html/bin/console cache:clear --env=prod --no-interaction 2>/dev/null || true\nphp /var/www/html/bin/console cache:warmup --env=prod --no-interaction 2>/dev/null || true\napache2-foreground' > /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
 RUN echo 'ServerName localhost\n\
