@@ -14,6 +14,11 @@ security:
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
 
+        api_token:
+            pattern: ^/api/token
+            stateless: true
+            security: false
+
         api_login:
             pattern: ^/api/login_check
             stateless: true
@@ -46,6 +51,7 @@ security:
                 target: app_home
 
     access_control:
+        - { path: ^/api/token, roles: PUBLIC_ACCESS }
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/register/doctor, roles: PUBLIC_ACCESS }
@@ -53,7 +59,6 @@ security:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/doctor, roles: ROLE_DOCTOR }
         - { path: ^/patient, roles: ROLE_PATIENT }
-        - { path: ^/api/token, roles: PUBLIC_ACCESS }
 
 when@test:
     security:
