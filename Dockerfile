@@ -14,6 +14,9 @@ RUN cp .env.dev .env
 
 RUN composer install --no-dev --optimize-autoloader
 
+RUN echo '#!/bin/bash\nphp /var/www/html/bin/console doctrine:schema:create --env=prod --no-interaction 2>/dev/null || true\napache2-foreground' > /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 RUN echo 'ServerName localhost\n\
 <VirtualHost *:80>\n\
     DocumentRoot /var/www/html/public\n\
@@ -31,5 +34,7 @@ RUN echo 'ServerName localhost\n\
 </VirtualHost>' > /etc/apache2/sites-enabled/000-default.conf
 
 RUN a2enmod rewrite headers
+
+CMD ["/usr/local/bin/start.sh"]
 
 EXPOSE 80
