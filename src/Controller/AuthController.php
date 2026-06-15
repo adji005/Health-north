@@ -18,6 +18,30 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AuthController extends AbstractController
 {
+
+#[Route('/api/login_check', name: 'api_login_check', methods: ['POST'])]
+public function apiLogin(
+    Request $request,
+    \Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface $JWTManager,
+    \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $passwordHasher,
+    \App\Repository\UserRepository $userRepo
+): JsonResponse {
+    $data = json_decode($request->getContent(), true);
+    
+    $user = $userRepo->findOneBy(['email' => $data['email'] ?? '']);
+    
+    if (!$user || !$passwordHasher->isPasswordValid($user, $data['password'] ?? '')) {
+        return $this->json(['error' => 'Identifiants invalides'], 401);
+    }
+    
+    if (!$user->isActive()) {
+        return $this->json(['error' => 'Compte inactif'], 403);
+    }
+    
+    $token = $JWTManager->create($user);
+    
+    return $this->json(['token' => $token]);
+}
     /**Page de connexion qui affiche le form de Login */
     #[Route('/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
