@@ -10,6 +10,8 @@ WORKDIR /var/www/html
 
 COPY . .
 
+RUN cp .env.dev .env
+
 RUN composer install --no-dev --optimize-autoloader
 
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-enabled/000-default.conf
