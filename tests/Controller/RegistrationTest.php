@@ -42,7 +42,7 @@ class RegistrationTest extends WebTestCase
     {
         $client = static::createClient();
         
-        // Mot de passe trop faible (pas de majuscule)
+        // Mot de passe faible(pas de majuscule)
         $donnees = [
             'nom' => 'Testeur',
             'prenom' => 'Marie',

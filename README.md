@@ -79,7 +79,7 @@ php -S localhost:8000 -t public
 
 6. **Accéder à l'application**
 
-[text](http://localhost:8000)
+(http://localhost:8000)
 
 ## Tests
 
