@@ -52,6 +52,7 @@ security:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/doctor, roles: ROLE_DOCTOR }
         - { path: ^/patient, roles: ROLE_PATIENT }
+        - { path: ^/api/token, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

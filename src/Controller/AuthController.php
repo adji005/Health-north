@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class AuthController extends AbstractController
 {
 
-#[Route('/api/login_check', name: 'api_login_check', methods: ['POST'])]
+#[Route('/api/token', name: 'api_token', methods: ['POST'])]
 public function apiLogin(
     Request $request,
     \Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface $JWTManager,
