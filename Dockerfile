@@ -15,6 +15,8 @@ RUN cp .env.dev .env
 RUN composer install --no-dev --optimize-autoloader
 
 RUN php bin/console cache:clear --env=prod --no-interaction 2>/dev/null || true
+RUN php bin/console doctrine:cache:clear-metadata --env=prod --no-interaction 2>/dev/null || true
+RUN php bin/console cache:warmup --env=prod --no-interaction 2>/dev/null || true
 
 RUN chown -R www-data:www-data /var/www/html/var
 RUN chmod -R 777 /var/www/html/var
