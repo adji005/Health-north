@@ -14,15 +14,22 @@ RUN cp .env.dev .env
 
 RUN composer install --no-dev --optimize-autoloader
 
-RUN echo '<VirtualHost *:80>\n\
+RUN echo 'ServerName localhost\n\
+<VirtualHost *:80>\n\
     DocumentRoot /var/www/html/public\n\
     <Directory /var/www/html/public>\n\
+        Options Indexes FollowSymLinks\n\
         AllowOverride All\n\
         Require all granted\n\
+        DirectoryIndex index.php\n\
+        <IfModule mod_rewrite.c>\n\
+            RewriteEngine On\n\
+            RewriteCond %{REQUEST_FILENAME} !-f\n\
+            RewriteRule ^(.*)$ index.php [QSA,L]\n\
+        </IfModule>\n\
     </Directory>\n\
 </VirtualHost>' > /etc/apache2/sites-enabled/000-default.conf
 
 RUN a2enmod rewrite headers
-RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
 EXPOSE 80
